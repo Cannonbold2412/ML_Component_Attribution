@@ -1,0 +1,61 @@
+market,window,variant,delta_sharpe_paper,significant_paper,delta_sharpe_rep,significant_rep,sign_agrees
+commodities,forward,Rule-based ADX gate,-3.2307219622517844,False,-5.029674195594954,False,True
+commodities,forward,ML Regime Filter (linearity),-0.6741861652158807,False,-3.5144320022512305,False,True
+commodities,forward,ML Regime Filter (excursion),1.626030658693784,False,2.1337924261134225,False,True
+commodities,forward,ML Regime Filter (move_size),-7.653206979914074,True,1.6285115339614666,False,False
+commodities,holdout,Rule-based ADX gate,0.5432812935191813,False,0.511487054537902,False,True
+commodities,holdout,ML Regime Filter (linearity),-0.5399044646405078,False,2.18602408910127,False,False
+commodities,holdout,ML Regime Filter (excursion),-1.1569692126635378,False,0.1991131572587996,False,False
+commodities,holdout,ML Regime Filter (move_size),-1.64618601429878,False,-0.805199088900252,False,True
+forex,holdout,Rule-based ADX gate,-1.022961069264034,False,-1.052017373722963,False,True
+forex,holdout,ML Regime Filter (linearity),-5.204818019784574,True,-0.0173585740298878,False,True
+forex,holdout,ML Regime Filter (excursion),-4.656959096450194,True,-3.5454346878110057,False,True
+forex,holdout,ML Regime Filter (move_size),-4.776672922549415,True,-2.155971676555968,False,True
+indian_equities,forward,Rule-based ADX gate,-1.0135183845012117,False,-0.4299708779638205,False,True
+indian_equities,forward,ML Regime Filter (linearity),-2.8904197969305154,False,-0.2123983703407252,False,True
+indian_equities,forward,ML Regime Filter (excursion),-0.5131559697346257,False,-0.4266367804661177,False,True
+indian_equities,forward,ML Regime Filter (move_size),-0.7838868263808081,False,0.294857931261167,False,False
+indian_equities,holdout,Rule-based ADX gate,-0.6334255132173379,False,-1.3931110140575846,False,True
+indian_equities,holdout,ML Regime Filter (linearity),0.2344024230251729,False,-1.346274289068548,False,False
+indian_equities,holdout,ML Regime Filter (excursion),-1.0136755410947798,False,-1.2716861502484589,False,True
+indian_equities,holdout,ML Regime Filter (move_size),-0.8939335020780754,False,-1.6852986067422884,True,True
+commodities,forward,ML Meta-Labeling,0.8348460717828514,False,-0.4741642095359069,False,False
+commodities,holdout,ML Meta-Labeling,0.6682506030909883,False,1.270835989409181,False,True
+forex,holdout,ML Meta-Labeling,-4.188992850692708,True,0.9373500602116231,False,False
+indian_equities,forward,ML Meta-Labeling,1.843879391437058,False,1.401199213637234,False,True
+indian_equities,holdout,ML Meta-Labeling,1.0431250610677192,False,-0.018349877040408,False,False
+commodities,forward,ML Entry,-2.1707976846957275,False,-3.504525992301058,False,True
+commodities,holdout,ML Entry,-1.0589856860427973,False,-0.1249756741016103,False,True
+forex,holdout,ML Entry,-4.45607618894865,True,-1.059087449919288,False,True
+indian_equities,forward,ML Entry,1.5337259418923903,False,0.3711041920240645,False,True
+indian_equities,holdout,ML Entry,-0.8225118382074772,False,-1.857119951230513,True,True
+commodities,forward,ML Exit,-7.215006781935232,True,-6.163864379322274,True,True
+commodities,holdout,ML Exit,-2.47113029367852,True,-1.606137041533707,False,True
+forex,holdout,ML Exit,-6.4832400886564265,True,-3.869210747196913,True,True
+indian_equities,forward,ML Exit,0.0893172147382017,False,-0.1204900815469982,False,False
+indian_equities,holdout,ML Exit,-3.0787631932771213,True,-5.06882822919293,True,True
+commodities,forward,ML Position Sizing,-1.0368835230510922,False,-1.13168461504314,False,True
+commodities,holdout,ML Position Sizing,0.1630696284765362,False,0.1782718877195344,False,True
+forex,holdout,ML Position Sizing,-1.0256779719535425,False,-0.7884513132193376,False,True
+indian_equities,forward,ML Position Sizing,0.3824398418584904,False,0.1796534010220472,False,True
+indian_equities,holdout,ML Position Sizing,0.599421623306839,False,0.1563247956053217,False,True
+commodities,forward,Entry+Exit,-6.3116544933645145,True,-7.191287250157576,True,True
+commodities,forward,Entry+Sizing,-3.547506503609208,False,-5.855306549612759,True,True
+commodities,forward,Exit+Sizing,-6.448095565629524,True,-5.447612498110294,True,True
+commodities,forward,Best Combined (Meta-Label + Sizing),0.4945709628501236,False,-0.9251781032573794,False,False
+commodities,holdout,Entry+Exit,-2.6760941219405234,True,-1.661481085272511,False,True
+commodities,holdout,Entry+Sizing,-1.3263642305156198,False,-0.3389786964216763,False,True
+commodities,holdout,Exit+Sizing,-2.4205537780723154,True,-1.3121883884643173,False,True
+commodities,holdout,Best Combined (Meta-Label + Sizing),0.6118871201006182,False,1.1891886520239627,False,True
+forex,holdout,Entry+Exit,-4.875029398516235,True,-3.3374788617693616,False,True
+forex,holdout,Entry+Sizing,-3.988658068434996,True,-0.9279458917476666,False,True
+forex,holdout,Exit+Sizing,-6.212405776280466,True,-3.9109183294038297,True,True
+forex,holdout,Best Combined (Meta-Label + Sizing),-4.274786762687173,True,1.1057934921188974,False,False
+indian_equities,forward,Entry+Exit,-2.339839949636631,False,-2.438032432968752,False,True
+indian_equities,forward,Entry+Sizing,1.8347273011677545,False,0.3624011820637094,False,True
+indian_equities,forward,Exit+Sizing,0.6755360991372488,False,0.401669131696188,False,True
+indian_equities,forward,Best Combined (Meta-Label + Sizing),1.647058657499776,False,1.5307018075524084,False,True
+indian_equities,holdout,Entry+Exit,-2.970133023694225,True,-5.023623657772955,True,True
+indian_equities,holdout,Entry+Sizing,-0.841954951884186,False,-2.128746796939124,True,True
+indian_equities,holdout,Exit+Sizing,-2.484642058388248,True,-4.393745158990505,True,True
+indian_equities,holdout,Best Combined (Meta-Label + Sizing),1.1627545018881094,False,0.0407520998074479,False,True

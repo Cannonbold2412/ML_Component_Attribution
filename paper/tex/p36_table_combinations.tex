@@ -1,0 +1,29 @@
+\begin{longtable}{l l l r r r r l}
+\caption{Combination experiments: 4 combinations $\times$ 3 markets $\times$ available windows (20 configurations).} \label{tab:combinations} \\
+\toprule
+Market & Window & Variant & Trades & Sharpe (base $\to$ variant) & Deflated Sharpe & $\Delta$Sharpe & Significant? \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+commodities & forward & best\_combined & 37 & 4.17 $\to$ 4.67 & 0.997 & +0.49 & no \\
+commodities & forward & entry\_exit & 210 & 4.17 $\to$ -2.14 & 0.106 & -6.31 & \textbf{yes} \\
+commodities & forward & entry\_sizing & 65 & 4.17 $\to$ 0.62 & 0.619 & -3.55 & no \\
+commodities & forward & exit\_sizing & 113 & 4.17 $\to$ -2.28 & 0.123 & -6.45 & \textbf{yes} \\
+commodities & holdout & best\_combined & 170 & 2.72 $\to$ 3.34 & 1.000 & +0.61 & no \\
+commodities & holdout & entry\_exit & 1420 & 2.72 $\to$ 0.05 & 0.618 & -2.68 & \textbf{yes} \\
+commodities & holdout & entry\_sizing & 335 & 2.72 $\to$ 1.40 & 0.957 & -1.33 & no \\
+commodities & holdout & exit\_sizing & 610 & 2.72 $\to$ 0.30 & 0.723 & -2.42 & \textbf{yes} \\
+forex\_4pair & holdout & best\_combined & 118 & 5.53 $\to$ 1.26 & 0.831 & -4.27 & \textbf{yes} \\
+forex\_4pair & holdout & entry\_exit & 1233 & 5.53 $\to$ 0.66 & 0.977 & -4.88 & \textbf{yes} \\
+forex\_4pair & holdout & entry\_sizing & 243 & 5.53 $\to$ 1.54 & 0.966 & -3.99 & \textbf{yes} \\
+forex\_4pair & holdout & exit\_sizing & 596 & 5.53 $\to$ -0.68 & 0.321 & -6.21 & \textbf{yes} \\
+indian\_equities & forward & best\_combined & 197 & 1.05 $\to$ 2.70 & 0.994 & +1.65 & no \\
+indian\_equities & forward & entry\_exit & 1794 & 1.05 $\to$ -1.29 & 0.089 & -2.34 & no \\
+indian\_equities & forward & entry\_sizing & 290 & 1.05 $\to$ 2.89 & 0.999 & +1.83 & no \\
+indian\_equities & forward & exit\_sizing & 915 & 1.05 $\to$ 1.73 & 0.991 & +0.68 & no \\
+indian\_equities & holdout & best\_combined & 527 & 2.84 $\to$ 4.01 & 1.000 & +1.16 & no \\
+indian\_equities & holdout & entry\_exit & 3420 & 2.84 $\to$ -0.13 & 0.586 & -2.97 & \textbf{yes} \\
+indian\_equities & holdout & entry\_sizing & 756 & 2.84 $\to$ 2.00 & 1.000 & -0.84 & no \\
+indian\_equities & holdout & exit\_sizing & 1279 & 2.84 $\to$ 0.36 & 0.773 & -2.48 & \textbf{yes} \\
+\end{longtable}

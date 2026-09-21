@@ -1,0 +1,13 @@
+variant,kind,forex,commodities,indian_equities,recommendation
+Rule-based ADX gate,independent,-1.05,-2.26,-0.91,Neutral (no consistent effect)
+ML Regime Filter (linearity),independent,-0.02,-0.66,-0.78,Neutral (no consistent effect)
+ML Regime Filter (excursion),independent,-3.55,+1.17,-0.85,Worth exploring in commodities (unreplicated)
+ML Regime Filter (move_size),independent,-2.16,+0.41,-0.70*-,"Mixed (avoid in indian_equities; promising, unreplicated in commodities)"
+ML Meta-Labeling,narrowing,+0.94,+0.40,+0.69,"Worth exploring in forex, commodities, indian_equities (unreplicated)"
+ML Position Sizing,narrowing,-0.79,-0.48,+0.17,Worth exploring in indian_equities (unreplicated)
+ML Entry,replacing,-1.06,-1.81,-0.74*-,Avoid (significant loss in indian_equities)
+ML Exit,replacing,-3.87*-,-3.89*-,-2.59*-,"Avoid (significant loss in forex, commodities, indian_equities)"
+Entry+Exit,combination,-3.34,-4.43*-,-3.73*-,"Avoid (significant loss in commodities, indian_equities)"
+Entry+Sizing,combination,-0.93,-3.10*-,-0.88*-,"Avoid (significant loss in commodities, indian_equities)"
+Exit+Sizing,combination,-3.91*-,-3.38*-,-2.00*-,"Avoid (significant loss in forex, commodities, indian_equities)"
+Best Combined (Meta-Label + Sizing),combination,+1.11,+0.13,+0.79,"Worth exploring in forex, commodities, indian_equities (unreplicated)"

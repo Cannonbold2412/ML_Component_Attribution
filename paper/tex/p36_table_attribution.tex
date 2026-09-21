@@ -1,0 +1,49 @@
+\begin{longtable}{p{2.6cm} p{3.3cm} l l r r l}
+\caption{Individual-component attribution: every component $\times$ market $\times$ window with a bootstrap CI available (40 configurations).} \label{tab:attribution} \\
+\toprule
+Component & Variant & Market & Window & $\Delta$Sharpe & Deflated Sharpe & Significant? \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+ML Entry & ML entry (replaces jma\_signals) & commodities & forward & -2.17 & 0.857 & no \\
+ML Entry & ML entry (replaces jma\_signals) & commodities & holdout & -1.06 & 0.986 & no \\
+ML Entry & ML entry (replaces jma\_signals) & forex\_4pair & holdout & -4.46 & 0.886 & \textbf{yes} \\
+ML Entry & ML entry (replaces jma\_signals) & indian\_equities & forward & +1.53 & 0.997 & no \\
+ML Entry & ML entry (replaces jma\_signals) & indian\_equities & holdout & -0.82 & 1.000 & no \\
+ML Exit & ML exit (replaces ATR stop/target) & commodities & forward & -7.22 & 0.031 & \textbf{yes} \\
+ML Exit & ML exit (replaces ATR stop/target) & commodities & holdout & -2.47 & 0.695 & \textbf{yes} \\
+ML Exit & ML exit (replaces ATR stop/target) & forex\_4pair & holdout & -6.48 & 0.204 & \textbf{yes} \\
+ML Exit & ML exit (replaces ATR stop/target) & indian\_equities & forward & +0.09 & 0.946 & no \\
+ML Exit & ML exit (replaces ATR stop/target) & indian\_equities & holdout & -3.08 & 0.444 & \textbf{yes} \\
+ML Meta-Labeling & ML meta-label filter & commodities & forward & +0.83 & 0.997 & no \\
+ML Meta-Labeling & ML meta-label filter & commodities & holdout & +0.67 & 1.000 & no \\
+ML Meta-Labeling & ML meta-label filter & forex\_4pair & holdout & -4.19 & 0.854 & \textbf{yes} \\
+ML Meta-Labeling & ML meta-label filter & indian\_equities & forward & +1.84 & 0.997 & no \\
+ML Meta-Labeling & ML meta-label filter & indian\_equities & holdout & +1.04 & 1.000 & no \\
+ML Position Sizing & ML position sizing (re-weighted trades) & commodities & forward & -1.04 & 0.969 & no \\
+ML Position Sizing & ML position sizing (re-weighted trades) & commodities & holdout & +0.16 & 1.000 & no \\
+ML Position Sizing & ML position sizing (re-weighted trades) & forex\_4pair & holdout & -1.03 & 1.000 & no \\
+ML Position Sizing & ML position sizing (re-weighted trades) & indian\_equities & forward & +0.38 & 0.908 & no \\
+ML Position Sizing & ML position sizing (re-weighted trades) & indian\_equities & holdout & +0.60 & 1.000 & no \\
+ML Regime Filter & Rule-based ADX gate & commodities & forward & -3.23 & 0.325 & no \\
+ML Regime Filter & ML regime (linearity label) & commodities & forward & -0.67 & 0.723 & no \\
+ML Regime Filter & ML regime (excursion label) & commodities & forward & +1.63 & 0.976 & no \\
+ML Regime Filter & ML regime (move-size label) & commodities & forward & -7.65 & 0.032 & \textbf{yes} \\
+ML Regime Filter & Rule-based ADX gate & commodities & holdout & +0.54 & 0.998 & no \\
+ML Regime Filter & ML regime (linearity label) & commodities & holdout & -0.54 & 0.885 & no \\
+ML Regime Filter & ML regime (excursion label) & commodities & holdout & -1.16 & 0.819 & no \\
+ML Regime Filter & ML regime (move-size label) & commodities & holdout & -1.65 & 0.545 & no \\
+ML Regime Filter & Rule-based ADX gate & forex\_4pair & holdout & -1.02 & 0.997 & no \\
+ML Regime Filter & ML regime (linearity label) & forex\_4pair & holdout & -5.20 & 0.313 & \textbf{yes} \\
+ML Regime Filter & ML regime (excursion label) & forex\_4pair & holdout & -4.66 & 0.477 & \textbf{yes} \\
+ML Regime Filter & ML regime (move-size label) & forex\_4pair & holdout & -4.78 & 0.455 & \textbf{yes} \\
+ML Regime Filter & Rule-based ADX gate & indian\_equities & forward & -1.01 & 0.661 & no \\
+ML Regime Filter & ML regime (linearity label) & indian\_equities & forward & -2.89 & 0.133 & no \\
+ML Regime Filter & ML regime (excursion label) & indian\_equities & forward & -0.51 & 0.895 & no \\
+ML Regime Filter & ML regime (move-size label) & indian\_equities & forward & -0.78 & 0.787 & no \\
+ML Regime Filter & Rule-based ADX gate & indian\_equities & holdout & -0.63 & 0.989 & no \\
+ML Regime Filter & ML regime (linearity label) & indian\_equities & holdout & +0.23 & 1.000 & no \\
+ML Regime Filter & ML regime (excursion label) & indian\_equities & holdout & -1.01 & 0.971 & no \\
+ML Regime Filter & ML regime (move-size label) & indian\_equities & holdout & -0.89 & 0.957 & no \\
+\end{longtable}
