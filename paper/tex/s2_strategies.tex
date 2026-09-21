@@ -1,0 +1,14 @@
+\begin{longtable}{p{3.2cm} p{4cm} p{2.6cm} l p{3cm}}
+\caption{The five pre-registered strategies (the rule-based controls). Each instrument's parameters are re-selected by walk-forward on every fold.} \label{tab:s2strat} \\
+\toprule
+Strategy & Reference & Signal grid & Exit & Exit grid \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+JMA crossover (paper baseline) & Study 1 baseline; Jurik moving average crossover & fast=[5, 7, 9], slow=[21, 28] & trailing & sl\_mult=[1.5, 2.0], trail\_mult=[2.0, 3.0] \\
+Dual moving-average crossover & Brock, Lakonishok \& LeBaron (1992) & fast=[20, 50], slow=[100, 200] & trailing & sl\_mult=[2.0, 3.0], trail\_mult=[3.0, 4.0] \\
+Donchian channel breakout & Turtle trading rules (Dennis/Eckhardt); Donchian (1960) & lookback=[20, 55] & trailing & sl\_mult=[2.0], trail\_mult=[2.0, 3.0] \\
+Time-series momentum & Moskowitz, Ooi \& Pedersen (2012) & lookback=[126, 252] & trailing & sl\_mult=[2.0, 3.0], trail\_mult=[3.0, 4.0] \\
+RSI(2) short-term mean reversion & Connors \& Alvarez (2008) & entry=[5, 10] & bracket & sl\_mult=[2.0, 3.0], tp\_mult=[1.0, 1.5] \\
+\end{longtable}

@@ -1,0 +1,44 @@
+\begin{longtable}{l l r r r r r}
+\caption{Stress test: return and maximum drawdown of the all-market portfolio inside pre-registered crisis windows (mean over strategies).} \label{tab:s2crisis} \\
+\toprule
+Crisis & Component & N & Return before & Return after & MaxDD before & MaxDD after \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+GFC & Rule ADX gate & 5 & -1.0\% & -0.9\% & -9.4\% & -7.9\% \\
+Euro debt crisis & Rule ADX gate & 5 & -2.2\% & -2.1\% & -5.4\% & -3.9\% \\
+2015-16 selloff & Rule ADX gate & 5 & -1.4\% & -1.2\% & -4.1\% & -3.1\% \\
+COVID crash & Rule ADX gate & 5 & +5.8\% & +8.3\% & -11.0\% & -8.1\% \\
+2022 bear market & Rule ADX gate & 5 & -7.6\% & -4.3\% & -12.0\% & -9.4\% \\
+GFC & ML regime filter & 5 & -1.0\% & +0.3\% & -9.4\% & -5.4\% \\
+Euro debt crisis & ML regime filter & 5 & -2.2\% & -1.7\% & -5.4\% & -3.3\% \\
+2015-16 selloff & ML regime filter & 5 & -1.4\% & -1.2\% & -4.1\% & -2.6\% \\
+GFC & ML meta-labeling & 5 & -1.0\% & -0.9\% & -9.4\% & -4.7\% \\
+Euro debt crisis & ML meta-labeling & 5 & -2.2\% & -1.5\% & -5.4\% & -2.8\% \\
+2015-16 selloff & ML meta-labeling & 5 & -1.4\% & -1.0\% & -4.1\% & -2.4\% \\
+GFC & ML position sizing & 5 & -1.0\% & -1.0\% & -9.4\% & -7.9\% \\
+Euro debt crisis & ML position sizing & 5 & -2.2\% & -2.2\% & -5.4\% & -4.6\% \\
+2015-16 selloff & ML position sizing & 5 & -1.4\% & -1.5\% & -4.1\% & -3.6\% \\
+GFC & ML entry & 5 & -1.0\% & +5.9\% & -9.4\% & -11.9\% \\
+Euro debt crisis & ML entry & 5 & -2.2\% & -3.4\% & -5.4\% & -6.8\% \\
+2015-16 selloff & ML entry & 5 & -1.4\% & -2.9\% & -4.1\% & -5.7\% \\
+GFC & ML exit & 5 & -1.0\% & +1.1\% & -9.4\% & -2.8\% \\
+Euro debt crisis & ML exit & 5 & -2.2\% & -0.3\% & -5.4\% & -2.0\% \\
+2015-16 selloff & ML exit & 5 & -1.4\% & -0.1\% & -4.1\% & -1.3\% \\
+GFC & Meta-label + sizing & 5 & -1.0\% & -1.1\% & -9.4\% & -5.7\% \\
+Euro debt crisis & Meta-label + sizing & 5 & -2.2\% & -1.8\% & -5.4\% & -3.5\% \\
+2015-16 selloff & Meta-label + sizing & 5 & -1.4\% & -1.3\% & -4.1\% & -3.0\% \\
+COVID crash & ML regime filter & 5 & +5.8\% & +2.7\% & -11.0\% & -4.1\% \\
+2022 bear market & ML regime filter & 5 & -7.6\% & -5.4\% & -12.0\% & -9.8\% \\
+COVID crash & ML meta-labeling & 5 & +5.8\% & +3.1\% & -11.0\% & -4.1\% \\
+2022 bear market & ML meta-labeling & 5 & -7.6\% & -3.9\% & -12.0\% & -7.4\% \\
+COVID crash & ML position sizing & 5 & +5.8\% & +1.9\% & -11.0\% & -10.4\% \\
+2022 bear market & ML position sizing & 5 & -7.6\% & -6.4\% & -12.0\% & -11.0\% \\
+COVID crash & ML entry & 5 & +5.8\% & -1.7\% & -11.0\% & -16.1\% \\
+2022 bear market & ML entry & 5 & -7.6\% & -2.9\% & -12.0\% & -18.6\% \\
+COVID crash & ML exit & 5 & +5.8\% & -0.3\% & -11.0\% & -4.5\% \\
+2022 bear market & ML exit & 5 & -7.6\% & +0.1\% & -12.0\% & -4.7\% \\
+COVID crash & Meta-label + sizing & 5 & +5.8\% & +3.0\% & -11.0\% & -5.2\% \\
+2022 bear market & Meta-label + sizing & 5 & -7.6\% & -4.4\% & -12.0\% & -8.8\% \\
+\end{longtable}
