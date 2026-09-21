@@ -43,6 +43,21 @@ def _data(M, cfg):
     M["STwoInstruments"] = str(len(ok))
     M["STwoPlanned"] = str(sum(len(v["tickers"]) for v in cfg["universe"].values()))
     M["STwoMarkets"] = str(ok.market.nunique())
+    for mkt, n in ok.market.value_counts().items():
+        M["STwoN" + mkt.replace("_", "")] = str(n)
+    stocks = ok[ok.market.str.startswith("stocks")].symbol
+    suffix = stocks.str.extract(r"\.([A-Z]+)$")[0].fillna("US")  # exchange suffix; none = US listing
+    M["STwoExchanges"] = str(suffix.nunique())
+    for mkt, u in cfg["universe"].items():
+        M["STwoCost" + mkt.replace("_", "")] = f"{u['cost_bps']:g}"
+    st = cfg["statistics"]
+    M["STwoBlock"], M["STwoBoot"] = str(st["block_days"]), f"{st['n_boot']:,}".replace(",", "{,}")
+    M["STwoCostMults"] = ", ".join(f"$\times{m:g}$" for m in st["cost_multipliers"] if m != 1)
+    fz = cfg["study"]["freezes"]
+    M["STwoStart"] = cfg["study"]["data_start"][:4]
+    M["STwoFzA"], M["STwoFzB"] = fz[0]["split"][:4], fz[1]["split"][:4]
+    M["STwoFzAEnd"] = str(int(fz[0]["test_end"][:4]) - 1)
+    M["STwoFzATrainEnd"], M["STwoFzBTrainEnd"] = str(int(fz[0]["split"][:4]) - 1), str(int(fz[1]["split"][:4]) - 1)
     M["STwoRows"] = f"{int(ok.clean_rows.sum()):,}".replace(",", "{,}")
     M["STwoFirst"], M["STwoLast"] = str(ok["first"].min()), str(ok["last"].max())
     M["STwoFetched"] = raw[raw.source == "yahoo"].fetched_at_utc.min()[:10]
