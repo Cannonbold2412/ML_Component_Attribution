@@ -24,7 +24,7 @@ import pandas as pd
 from .indicators import adx, atr, jma
 
 TRADE_COLS = ["entry_time", "exit_time", "entry_i", "exit_i", "direction",
-              "entry_price", "exit_price", "reason", "ret"]
+              "entry_price", "exit_price", "reason", "gross", "size", "ret"]
 
 
 # --------------------------------------------------------------------------- signals
@@ -52,7 +52,9 @@ def _trades_frame(rows: list[tuple], df: pd.DataFrame, fee_bps: float) -> pd.Dat
     t = pd.DataFrame(rows, columns=["entry_i", "exit_i", "direction", "entry_price", "exit_price", "reason"])
     dates = pd.to_datetime(df["Date"]).to_numpy()
     t["entry_time"], t["exit_time"] = dates[t["entry_i"]], dates[t["exit_i"]]
-    t["ret"] = t["direction"] * (t["exit_price"] - t["entry_price"]) / t["entry_price"] - fee_bps / 1e4
+    t["gross"] = t["direction"] * (t["exit_price"] - t["entry_price"]) / t["entry_price"]
+    t["size"] = 1.0
+    t["ret"] = t["gross"] - fee_bps / 1e4
     return t[TRADE_COLS]
 
 
@@ -75,8 +77,10 @@ def _scan(df: pd.DataFrame, signal: pd.Series, fee_bps: float, find_exit) -> pd.
 
 
 def bracket_exit(df: pd.DataFrame, signal: pd.Series, sl_mult: float = 1.5, tp_mult: float = 3.0,
-                 fee_bps: float = 7.0) -> pd.DataFrame:
-    """Fixed ATR stop / ATR target, evaluated on closes."""
+                 fee_bps: float = 7.0, fill: str = "stop") -> pd.DataFrame:
+    """Fixed ATR stop / ATR target, evaluated on closes. ``fill="stop"`` fills a breached
+    stop at the stop level (optimistic when the close gapped through it); ``fill="close"``
+    fills at the breaching close (what a close-only system can actually get)."""
     price = df["close"].to_numpy(dtype=float)
     n = len(price)
 
@@ -89,14 +93,17 @@ def bracket_exit(df: pd.DataFrame, signal: pd.Series, sl_mult: float = 1.5, tp_m
         if not hits.size:
             return n - 1, price[-1], "eod"
         k = hits[0]
-        return (i + 1 + k, sl, "stop") if stop_hit[k] else (i + 1 + k, tp, "target")
+        if stop_hit[k]:
+            return i + 1 + k, (sl if fill == "stop" else fwd[k]), "stop"
+        return i + 1 + k, tp, "target"
 
     return _scan(df, signal, fee_bps, find_exit)
 
 
 def trailing_exit(df: pd.DataFrame, signal: pd.Series, sl_mult: float = 1.5, trail_mult: float = 2.0,
-                  fee_bps: float = 7.0) -> pd.DataFrame:
-    """Initial ATR stop that ratchets to ``trail_mult * ATR`` behind the best close."""
+                  fee_bps: float = 7.0, fill: str = "stop") -> pd.DataFrame:
+    """Initial ATR stop that ratchets to ``trail_mult * ATR`` behind the best close.
+    ``fill`` as in :func:`bracket_exit`."""
     price = df["close"].to_numpy(dtype=float)
     atr_v = atr(df).to_numpy()
     n = len(price)
@@ -113,7 +120,8 @@ def trailing_exit(df: pd.DataFrame, signal: pd.Series, sl_mult: float = 1.5, tra
             hits = np.flatnonzero(fwd >= stop)
         if not hits.size:
             return n - 1, price[-1], "eod"
-        return i + 1 + hits[0], stop[hits[0]], "stop"
+        k = hits[0]
+        return i + 1 + k, (stop[k] if fill == "stop" else fwd[k]), "stop"
 
     return _scan(df, signal, fee_bps, find_exit)
 
@@ -130,6 +138,8 @@ class Pipeline:
     gate_fn: Callable | None = None
     sizer: Callable | None = None
     fee_bps: float = 7.0
+    lag: int = 0                                     # bars between signal and entry (execution delay)
+    exit_kwargs: dict = field(default_factory=dict)  # e.g. {"fill": "close"}
 
     def with_(self, **changes) -> "Pipeline":
         return replace(self, **changes)
@@ -139,13 +149,16 @@ class Pipeline:
         s = pd.Series(np.asarray(self.signal_fn(df, **sparams), dtype=int), index=df.index)
         if gate is None and self.gate_fn is not None:
             gate = self.gate_fn(df)
-        return s if gate is None else s.where(np.asarray(gate, dtype=bool), 0)
+        if gate is not None:
+            s = s.where(np.asarray(gate, dtype=bool), 0)
+        return s.shift(self.lag, fill_value=0) if self.lag else s
 
     def trades(self, df: pd.DataFrame, sparams: dict, rparams: dict, signal: pd.Series | None = None) -> pd.DataFrame:
         sig = self.signal(df, **sparams) if signal is None else signal
-        t = self.exit_fn(df, sig, fee_bps=self.fee_bps, **rparams)
+        t = self.exit_fn(df, sig, fee_bps=self.fee_bps, **self.exit_kwargs, **rparams)
         if self.sizer is not None and len(t):
-            t = t.assign(ret=t["ret"].to_numpy() * np.asarray(self.sizer(df, t), dtype=float))
+            m = np.asarray(self.sizer(df, t), dtype=float)
+            t = t.assign(size=m, gross=t["gross"].to_numpy() * m, ret=t["ret"].to_numpy() * m)
         return t
 
 
@@ -179,5 +192,5 @@ def walk_forward(df: pd.DataFrame, pipe: Pipeline, n_splits: int = 5, min_trades
             continue
         t = pipe.trades(chunks[k + 1], *best)
         if len(t):
-            out.append(t.assign(fold=k))
-    return pd.concat(out, ignore_index=True) if out else pd.DataFrame(columns=TRADE_COLS + ["fold"])
+            out.append(t.assign(fold=k, is_mean_ret=best_ret))  # in-sample score, for IS->OOS decay
+    return pd.concat(out, ignore_index=True) if out else pd.DataFrame(columns=TRADE_COLS + ["fold", "is_mean_ret"])
