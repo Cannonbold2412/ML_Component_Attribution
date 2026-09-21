@@ -140,6 +140,12 @@ def _components(M, mk, gl):
         M[f"STwoMkt{k}Gain"] = str(int((t.significant & (t.delta_sharpe > 0)).sum()))
         M[f"STwoMkt{k}Loss"] = str(int((t.significant & (t.delta_sharpe < 0)).sum()))
         M[f"STwoMkt{k}Med"] = f2(t.delta_sharpe.median(), True)
+        rsi, other = t[t.strategy == "rsi2_reversion"], t[t.strategy != "rsi2_reversion"]
+        M[f"STwoMkt{k}GainRSI"] = str(int((rsi.significant & (rsi.delta_sharpe > 0)).sum()))
+        M[f"STwoMkt{k}LossRSI"] = str(int((rsi.significant & (rsi.delta_sharpe < 0)).sum()))
+        M[f"STwoMkt{k}MedTrend"] = f2(other.delta_sharpe.median(), True)
+        M[f"STwoMkt{k}MedRSI"] = f2(rsi.delta_sharpe.median(), True)
+        M[f"STwoMkt{k}Turn"] = f2((t.v_turnover - t.b_turnover).median(), True)
         M[f"STwoGlob{k}Med"] = f2(g.delta_sharpe.median(), True)
         M[f"STwoGlob{k}Pos"] = f"{int((g.delta_sharpe > 0).sum())}/{len(g)}"
         M[f"STwoRep{k}Agree"] = pct(agree.mean()) if len(agree) else "n/a"
@@ -222,6 +228,9 @@ def _robustness(M, T, mk):
         comp, _, setting = v.partition("@")
         lab = f"{'Rule-based control' if comp == 'baseline' else COMP_LABEL.get(comp, comp)} under {setting.replace('_', ' ')}"
         M[f"STwoExec{COMP.get(comp, 'Base')}{'Stop' if 'stop' in setting else 'Lag'}Med"] = f2(g.delta_sharpe.median(), True)
+        tag = f"STwoExec{COMP.get(comp, 'Base')}{'Stop' if 'stop' in setting else 'Lag'}"
+        M[tag + "Sig"] = f"{int(g.significant.sum())}/{len(g)}"
+        M[tag + "Min"], M[tag + "Max"] = f2(g.delta_sharpe.min(), True), f2(g.delta_sharpe.max(), True)
         rows.append(["Execution (global)", esc(lab), len(g), f2(g.delta_sharpe.median(), True),
                      pct((g.delta_sharpe > 0).mean()), int((g.significant & (g.delta_sharpe > 0)).sum()),
                      int((g.significant & (g.delta_sharpe < 0)).sum()),

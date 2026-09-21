@@ -24,7 +24,7 @@ S1 = ROOT / "results"
 
 STRAT = {"jma_trend": "JMA", "sma_cross": "SMA", "donchian": "Donchian", "ts_momentum": "TSMOM", "rsi_reversion": "RSI",
          "rsi2_reversion": "RSI"}
-STRAT_LABEL = {"jma_trend": "JMA crossover", "sma_cross": "SMA 50/200-type crossover", "donchian": "Donchian breakout",
+STRAT_LABEL = {"jma_trend": "JMA crossover", "sma_cross": "Dual SMA crossover", "donchian": "Donchian breakout",
                "ts_momentum": "Time-series momentum", "rsi2_reversion": "RSI(2) reversion"}
 COMP = {"rule_adx": "Adx", "regime_linearity": "Regime", "meta_label": "Meta", "position_sizing": "Sizing",
         "entry": "Entry", "exit": "Exit", "best_combined": "Best"}
