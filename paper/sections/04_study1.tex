@@ -4,7 +4,7 @@
 \subsection{Design}
 
 The control is a JMA(7)/JMA(21) crossover whose parameters are walk-forward selected from a small
-grid, with a fixed $1.5\times$ATR stop / $3\times$ATR target (forex) or a $1.5\times$ATR stop with a
+grid, with a fixed $\SoneSl\times$ATR stop / $\SoneTp\times$ATR target (forex) or a $\SoneSl\times$ATR stop with a
 ratcheting trailing stop (commodities, Indian equities). Markets: a 4-pair forex sleeve (AUDNZD,
 CADJPY, AUDUSD, NZDUSD), five commodities (WTI, Brent, natural gas, gold, silver), and 48 NIFTY-50
 stocks with an annual sector-curation overlay. Each market's models were frozen at 70\% of its
@@ -13,7 +13,7 @@ and Indian equities, on a \emph{forward} window of data fetched after the study 
 reports a trade stream as a daily series by averaging the returns of trades exiting each day, Sharpe
 ratios annualized with a 6\%/yr risk-free rate, and a 95\% CI from 2{,}000 \emph{unpaired} i.i.d.\
 bootstrap resamples of each variant's daily series, computed on the \emph{per-day} Sharpe difference
-(so CI bounds are $\sqrt{252}\approx15.9$ times smaller than the annualized $\Delta$Sharpe beside
+(so CI bounds are $\sqrt{252}\approx\SqrtAnn$ times smaller than the annualized $\Delta$Sharpe beside
 them; Appendix~\ref{sec:errata}). A configuration is significant iff this CI excludes zero.
 
 \subsection{Results}

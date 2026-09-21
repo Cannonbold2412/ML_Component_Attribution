@@ -1,8 +1,9 @@
 \section{Research Gap and Related Work}
+\label{sec:related}
 
 Ablation studies of ML-augmented trading pipelines exist (e.g.\ a 2025 cross-sectional A-share
 turnover pipeline ablates its component modules and attributes annualized-return contribution per
-module; see Section~\ref{sec:related}), but they typically ablate \emph{modules of one specific
+module; discussed below), but they typically ablate \emph{modules of one specific
 proprietary pipeline architecture}, not \emph{insertion points of a single control mechanism into
 an already-fixed rule-based strategy} with identical features/model/hyperparameters held across
 every component. No work we found formalizes this constraint as a named, reusable methodology, runs
@@ -13,7 +14,6 @@ ones --- as a decision-support artifact rather than the single configuration tha
 best. MBCA fills that gap: it is the methodology, not merely the experiment, that is missing from
 the literature.
 
-\label{sec:related}
 
 \textbf{Meta-labeling.} L\'opez de Prado's meta-labeling \citep{lopezdeprado2018afml} separates the
 ``which direction'' decision (the primary model) from ``should I take this specific signal'' (a

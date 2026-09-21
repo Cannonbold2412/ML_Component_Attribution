@@ -71,8 +71,8 @@ crash and the 2022 bear market). Crypto enters only F2018. Each (strategy, marke
 is a market-level test; the equal-weight portfolio of all \STwoInstruments{} instruments gives a
 global test per (strategy, freeze). Beyond the main grid, the design pre-registers: \emph{cross-market
 transfer} (meta-labeling and meta-label + sizing models fit on every \emph{other} market, then applied
-to the held-out market); \emph{budget ablations} (meta-label thresholds 0.45 and 0.55; a small model
-with 50 trees of depth 3 for meta-labeling and exit); \emph{execution} sensitivities; cost multipliers;
+to the held-out market); \emph{budget ablations} (meta-label thresholds \STwoThrLo{} and \STwoThrHi{}; a small model
+with \STwoSmallTrees{} trees of depth \STwoSmallDepth{} for meta-labeling and exit); \emph{execution} sensitivities; cost multipliers;
 \emph{cross-regime} tests (bull/bear by the market index's position vs.\ its 200-day average, high/low
 volatility by 20-day realized volatility vs.\ its expanding median, both known at $t-1$); five crisis
 windows; a survivorship split (survivorship-free indices/ETFs/futures/FX vs.\ current-constituent
@@ -90,5 +90,5 @@ Multiplicity is controlled with the Benjamini--Hochberg false-discovery rate \ci
 within pre-defined families (the \STwoMktTests{} market-level main tests; the \STwoGlobTests{} global
 main tests; transfer; ablation; execution), with Holm's method \citep{holm1979simple} reported as a
 family-wise check, in the spirit of \citet{harvey2016cross} and \citet{sullivan1999data}. A difference
-is called significant iff $q<0.05$. Deflated Sharpe ratios \citep{bailey2014deflated} are reported for
+is called significant iff $q<\STwoAlpha$. Deflated Sharpe ratios \citep{bailey2014deflated} are reported for
 every portfolio.
