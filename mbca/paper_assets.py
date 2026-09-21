@@ -79,12 +79,37 @@ S1_KIND = {"ML Regime Filter": "independent", "ML Meta-Labeling": "narrowing", "
            "ML Entry": "replacing", "ML Exit": "replacing", "Combinations": "combination"}
 
 
+def compare_replication(paper: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
+    """Original Study 1 results vs. the independent re-implementation, configuration by configuration."""
+    regime = {"ML regime (linearity label)": "ML Regime Filter (linearity)",
+              "ML regime (excursion label)": "ML Regime Filter (excursion)",
+              "ML regime (move-size label)": "ML Regime Filter (move_size)"}
+    paper = paper.assign(
+        variant=[regime.get(v, v) if c in ("ML Regime Filter", "Combinations") else c
+                 for c, v in zip(paper["component"], paper["variant"])],
+        market=paper["market"].replace({"forex_4pair": "forex"}))
+    key = ["market", "window", "variant"]
+    m = paper[key + ["delta_sharpe", "significant"]].merge(
+        rep[key + ["delta_sharpe", "significant"]], on=key, suffixes=("_paper", "_rep"))
+    m["sign_agrees"] = (m["delta_sharpe_paper"] > 0) == (m["delta_sharpe_rep"] > 0)
+    return m
+
+
 def study1(M: Macros) -> None:
     from .report import forest_plot, matrix_plot
 
+    import inspect
+
+    from .strategy import bracket_exit, trailing_exit
+
+    d = lambda f, k: inspect.signature(f).parameters[k].default  # noqa: E731 -- design constants from the code
+    M["SoneSl"], M["SoneTp"], M["SoneTrail"] = (f"{d(bracket_exit, 'sl_mult'):g}", f"{d(bracket_exit, 'tp_mult'):g}",
+                                                f"{d(trailing_exit, 'trail_mult'):g}")
+    M["SqrtAnn"] = f"{np.sqrt(252):.1f}"
     p = pd.read_csv(S1 / "paper" / "component_attribution_table.csv")
     rep = pd.read_csv(S1 / "replication" / "attribution_table.csv")
-    cmp_ = pd.read_csv(S1 / "replication" / "paper_vs_replication.csv")
+    cmp_ = compare_replication(p, rep)
+    cmp_.to_csv(S1 / "replication" / "paper_vs_replication.csv", index=False)
     M["SoneConfigs"] = str(len(p))
     M["SoneSigGain"] = str(int((p.significant & (p.delta_sharpe > 0)).sum()))
     M["SoneSigLoss"] = str(int((p.significant & (p.delta_sharpe < 0)).sum()))

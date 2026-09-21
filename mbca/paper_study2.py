@@ -51,6 +51,11 @@ def _data(M, cfg):
     for mkt, u in cfg["universe"].items():
         M["STwoCost" + mkt.replace("_", "")] = f"{u['cost_bps']:g}"
     st = cfg["statistics"]
+    from .study import SMALL_MODEL, make_components
+    abl = make_components(["meta_label_thr045", "meta_label_thr055"])
+    M["STwoAlpha"] = f"{st['alpha']:g}"
+    M["STwoThrLo"], M["STwoThrHi"] = f"{abl['meta_label_thr045'].threshold:g}", f"{abl['meta_label_thr055'].threshold:g}"
+    M["STwoSmallTrees"], M["STwoSmallDepth"] = str(SMALL_MODEL["n_estimators"]), str(SMALL_MODEL["max_depth"])
     M["STwoBlock"], M["STwoBoot"] = str(st["block_days"]), f"{st['n_boot']:,}".replace(",", "{,}")
     M["STwoCostMults"] = ", ".join(f"$\times{m:g}$" for m in st["cost_multipliers"] if m != 1)
     fz = cfg["study"]["freezes"]
@@ -148,6 +153,8 @@ def _components(M, mk, gl):
         M[f"STwoMkt{k}Turn"] = f2((t.v_turnover - t.b_turnover).median(), True)
         M[f"STwoGlob{k}Med"] = f2(g.delta_sharpe.median(), True)
         M[f"STwoGlob{k}Pos"] = f"{int((g.delta_sharpe > 0).sum())}/{len(g)}"
+        M[f"STwoGlob{k}DD"] = f"{int((g.delta_max_drawdown > 0).sum())}/{len(g)}"
+        M[f"STwoGlob{k}Exp"] = pct((g.v_exposure - g.b_exposure).median(), True)
         M[f"STwoRep{k}Agree"] = pct(agree.mean()) if len(agree) else "n/a"
         M[f"STwoRep{k}Corr"] = f2(both["F2008"].corr(both["F2018"])) if len(both) > 2 else "n/a"
         rows.append([COMP_LABEL[c], t.kind.iloc[0], len(t), pct((t.delta_sharpe > 0).mean()),
@@ -405,7 +412,7 @@ def _bias_audit(M, T, mk):
         ["Survivorship", "Indices/ETFs/futures/FX analysed separately from current-constituent stocks and crypto",
          f"median $\\Delta$SR meta-label+sizing: free \\STwoSurvBestFree{{}} vs.\\ prone \\STwoSurvBestProne{{}}"],
         ["Selection", "Universe, strategies, components, windows, statistics pre-registered in git before data "
-         "existed; every variant reported", "commit 8d9f50f precedes all data/results"],
+         "existed; every variant reported", f"study.toml first committed in {_prereg_commit()}, before all data/results"],
         ["Overfitting", "Walk-forward parameter selection; deflated Sharpe; IS vs.\\ OOS trade-return decay; two "
          "independent freezes", "see Table~\\ref{tab:s2decay} and freeze agreement in Table~\\ref{tab:s2comp}"],
         ["Multiple testing", f"BH-FDR and Holm within families ({len(mk)} market-level main tests)",
@@ -418,3 +425,13 @@ def _bias_audit(M, T, mk):
     ]
     longtable(TEX / "s2_bias.tex", "Bias audit: each threat to validity, the test applied, and its outcome.",
               "tab:s2bias", ["Bias", "Test", "Outcome"], rows, "p{2.2cm} p{7cm} p{5.2cm}")
+
+
+def _prereg_commit() -> str:
+    """The commit that first added study.toml (read from git, not typed)."""
+    import subprocess
+
+    from .config import ROOT
+    out = subprocess.run(["git", "log", "--diff-filter=A", "--format=%h", "--", "study.toml"], cwd=ROOT,
+                         capture_output=True, text=True).stdout.split()
+    return out[-1] if out else "unknown"
