@@ -33,3 +33,11 @@ Each entry cites a commit.
   different instrument (5-day corr 0.64), reported rather than hidden.
 * Browser spot-check (claude-in-chrome, MarketWatch historical pages): AAPL and SAP.DE, 20 sessions
   each, raw Yahoo closes match to the cent (`data/study2/validation/browser_spotcheck.csv`).
+
+## 2026-09-22 — First full run aborted (performance, not results)
+
+* Run `20260921T210315Z` (commit e835a51) was stopped after 47 minutes with **no task finished and
+  no result produced or inspected**. Cause: every one of the 11 workers started one LightGBM/BLAS
+  thread per core (30 threads/process), so the processes thrashed (~10% useful CPU).
+* Fix: the runner pins each worker to one OpenMP/BLAS thread and records this in the manifest.
+  No experiment design, parameter, or data changed. The partial output was deleted unread.

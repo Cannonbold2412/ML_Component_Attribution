@@ -15,6 +15,7 @@ Freeze-independent variants (baseline, rule_adx) carry freeze="all".
 from __future__ import annotations
 
 import json
+import os
 import platform
 import subprocess
 import time
@@ -134,6 +135,11 @@ def run(workers: int = 11, only: list[str] | None = None, allow_dirty: bool = Fa
     dirty = _git("status", "--porcelain", "--", "mbca", "study.toml", "data/study2")
     if dirty and not allow_dirty:
         raise SystemExit(f"refusing to run with uncommitted code/config/data (commit first):\n{dirty}")
+    # one BLAS/OpenMP thread per worker: LightGBM and numpy otherwise start one thread per core in
+    # every worker, and 11 workers x 12 threads thrash (observed: ~10% useful CPU). Spawned workers
+    # inherit this environment. Results do not depend on it; it is recorded in the manifest.
+    threads = {k: "1" for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")}
+    os.environ.update(threads)
     cfg = load_config()
     tasks = [(s, m) for s in cfg["strategies"] for m in cfg["universe"]]
     if only:
@@ -151,7 +157,7 @@ def run(workers: int = 11, only: list[str] | None = None, allow_dirty: bool = Fa
         "python": platform.python_version(), "platform": platform.platform(),
         "packages": {"numpy": numpy.__version__, "pandas": pd.__version__, "scikit-learn": sklearn.__version__,
                      "lightgbm": lightgbm.__version__, "scipy": scipy.__version__},
-        "workers": workers, "tasks": [f"{s}:{m}" for s, m in tasks],
+        "workers": workers, "thread_env": threads, "tasks": [f"{s}:{m}" for s, m in tasks],
     }
     (rdir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     rows = []
