@@ -41,3 +41,20 @@ Each entry cites a commit.
   thread per core (30 threads/process), so the processes thrashed (~10% useful CPU).
 * Fix: the runner pins each worker to one OpenMP/BLAS thread and records this in the manifest.
   No experiment design, parameter, or data changed. The partial output was deleted unread.
+
+## 2026-09-22 — Study 2 run, analysis, paper
+
+* Run `20260921T211159Z` (commit 02b79c9, clean tree): 40/40 strategy x market tasks, 0 failures,
+  1,477,997 out-of-sample trades, 49 min on 11 single-threaded workers
+  (`results/study2/runs/20260921T211159Z/`). Skipped cells (crypto has no pre-2008 history, so no
+  F2008 models) are listed per task in `tasks.csv`.
+* `python -m mbca study analyze` -> `results/study2/analysis/` (1,468 tests in 8 families).
+* `python -m mbca study paper` -> `paper/tex/numbers.tex` (all in-text numbers), `paper/tex/s*_*.tex`,
+  `paper/figures/s*_*.png`; manuscript v5 built from them. `tests/test_paper.py` guards against
+  undefined macros, missing assets, and hand-typed decimals in result sections.
+* Claims checked against data before writing; one draft claim was corrected: shallower drawdowns
+  are an exposure effect shared by every trade-reducing component, not a property of narrowing ones.
+* Audit checks: (1) regenerating all paper assets leaves git clean (byte-identical); (2) re-running
+  task `ts_momentum:crypto` from scratch reproduces all 1,715 committed trades exactly.
+* No result was used to change the design; the pre-registered `study.toml` is unchanged since
+  commit 8d9f50f.
