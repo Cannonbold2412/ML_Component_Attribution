@@ -1,0 +1,2 @@
+source,symbol,error
+yahoo,ROG.SW,404 https://query2.finance.yahoo.com/v8/finance/chart/ROG.SW?period1=946684800&period2=1790023707&interval=1d&events=div%2Csplit&includeAdjustedClose=true
