@@ -1,0 +1,41 @@
+\appendix
+
+\section{Reproducibility and provenance}
+\label{sec:repro}
+
+Code, data, and this manuscript live in one repository
+(\url{https://github.com/Cannonbold2412/ML_Component_Attribution}). The chain from raw bytes to
+every number in this paper is:
+\begin{enumerate}
+  \item \texttt{study.toml} --- the pre-registered design (the only configuration the code reads).
+  \item \texttt{python -m mbca study fetch|clean|validate} --- raw API responses with URL, UTC
+        timestamp, and SHA-256 (\texttt{data/study2/raw/MANIFEST.csv}); cleaned series with per-rule
+        row counts and hashes (\texttt{data/study2/clean/MANIFEST.csv}); cross-source reports.
+  \item \texttt{python -m mbca study run} --- refuses to start with uncommitted code, configuration,
+        or data; writes every out-of-sample trade and a run manifest (git commit, configuration and
+        data hashes, package versions, thread settings, per-task timings).
+  \item \texttt{python -m mbca study analyze} --- all statistics
+        (\texttt{results/study2/analysis/*.csv}).
+  \item \texttt{python -m mbca study paper} --- every table (\texttt{paper/tex/}), figure
+        (\texttt{paper/figures/}), and in-text number (\texttt{paper/tex/numbers.tex}); the manuscript
+        contains no hand-typed result.
+\end{enumerate}
+Human decisions and deviations are recorded in \texttt{docs/EXPERIMENT\_LOG.md}; the git history
+shows that \texttt{study.toml} precedes all Study 2 data and results. Every methodological invariant
+(no look-ahead in features, strategies, or regime labels; freeze integrity; one insertion point per
+component; fill realism; MTM accounting; bootstrap size and power) is enforced by the test suite.
+The Study 1 results in Table~\ref{tab:s1} are the original study's output files, shipped verbatim.
+
+\section{Errata relative to earlier drafts}
+\label{sec:errata}
+
+No reported Study 1 result changed. (1) The Study 1 significance test was previously described as a
+paired, instrument-level block bootstrap; the code that produced every Study 1 CI resamples each
+daily series independently and i.i.d.\ and compares per-day (non-annualized) Sharpe ratios. It is now
+described as run, both scales are given, and Study 2 uses a paired block bootstrap instead. (2) The
+Study 1 forest plots drew the per-day CI around the annualized point estimate; they are regenerated on
+a common axis. (3) CAGR on a realized-at-exit daily series is not a capital growth rate and is no
+longer cited for Study 1; Study 2 uses mark-to-market portfolios. (4) An earlier draft stated that
+ML exit inflates trade count 2.7--4.2$\times$; the source data give
+\SoneExitInflLo--\SoneExitInflHi$\times$ (commodities holdout is the minimum). Generating every number
+from the pipeline removed this class of transcription error.

@@ -1,0 +1,86 @@
+\section{Methodology: Matched-Budget Component Attribution}
+\label{sec:methodology}
+
+\subsection{Definition}
+\label{sec:mbca}
+
+MBCA is a controlled-variable methodology for decomposing a hybrid decision system's performance by
+insertion point. It applies whenever a system combines a validated, rule-based control with one or
+more points where a learned model could instead make the decision. MBCA holds five things fixed
+across every tested insertion point:
+\begin{itemize}
+  \item the \textbf{data} each component's model is trained and evaluated on;
+  \item the \textbf{feature set} available to every learned component;
+  \item the \textbf{model class and hyperparameters} (no per-component tuning);
+  \item the \textbf{training/freeze discipline} (fit once, never refit on evaluation data); and
+  \item the \textbf{evaluation protocol and statistical test} used to call a result significant.
+\end{itemize}
+Only the \emph{insertion point} --- which single decision in the pipeline the learned model replaces
+or modifies --- varies between configurations, so a performance difference can be attributed to the
+insertion point rather than to a confound of feature engineering, tuning budget, or evaluation
+leniency. A negative result under MBCA is a statement about \emph{this stated budget} at that
+insertion point, not a claim that no learned model could ever help there.
+
+\subsection{A taxonomy of insertion points}
+\label{sec:taxonomy}
+
+We classify each component by how much it can alter the trade set the rule-based system would
+otherwise produce:
+\begin{itemize}
+  \item \textbf{Independent} --- gates admissibility orthogonally to the entry signal; can only reject
+        bars. \emph{Tested:} ML regime filter (and, as a rule-based comparator, an ADX$\geq$25 gate).
+  \item \textbf{Narrowing} --- filters or re-weights decisions the rule-based system already made;
+        cannot invent trades. \emph{Tested:} meta-labeling, position sizing.
+  \item \textbf{Replacing} --- substitutes the rule-based mechanism outright; can generate a materially
+        different trade set. \emph{Tested:} entry generation, exit policy.
+\end{itemize}
+The ex-ante hypothesis is that narrowing components bound their own worst case and should show
+gentler, lower-variance effects than replacing components.
+
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/p36_fig_mbca_pipeline.png}
+  \caption{The MBCA experiment: insertion points into one rule-based pipeline, each with a
+  matched-budget ML counterpart, and the invariants held constant across every swap.}
+  \label{fig:pipeline}
+\end{figure*}
+
+\subsection{Shared feature set, model, and freeze}
+
+Every learned component uses the same 8 backward-only features --- ADX, ATR-normalized momentum,
+historical volatility, return z-score, backward-looking $R^2$, RSI, MACD histogram, and KAMA slope ---
+each computable from data up to and including bar $t$. Every classifier is a
+\texttt{lightgbm.LGBMClassifier} with identical hyperparameters (\texttt{n\_estimators=200,
+num\_leaves=31, max\_depth=6, learning\_rate=0.05, min\_child\_samples=30,
+class\_weight="balanced", random\_state=42}) on standardized features. Each classifier is fit exactly
+once on data before a freeze date; training rows whose label window crosses the freeze are excluded;
+after freezing, models only predict. Parameters of the rule-based part of every pipeline (signal
+lengths, stop multiples) are re-selected by the same anchored walk-forward harness for the control and
+for every variant: each instrument's history is cut into five equal chronological folds, the parameter
+set with the best mean in-sample trade return (subject to a minimum trade count) is chosen on fold $k$
+and traded on fold $k+1$.
+
+\subsection{The components}
+
+For bar $t$ of instrument $i$ let $\mathbf{x}_{i,t}\in\mathbb{R}^8$ be the shared feature vector.
+\begin{itemize}
+  \item \textbf{ML regime filter:} entries are allowed iff
+        $P(\text{trend}_{i,t}=1\mid\mathbf{x}_{i,t})\geq 0.5$, where the label is 1 when the next 15
+        closes fit a straight line with $R^2\geq0.5$ (``linearity''; Study 1 also tests two other
+        label definitions).
+  \item \textbf{ML meta-labeling:} at bars where the rule-based entry fires, the label is whether the
+        trade the control would open is profitable; trades are taken iff
+        $\hat p^{\text{meta}}_{i,t}\geq 0.5$ \citep{lopezdeprado2018afml}.
+  \item \textbf{ML position sizing:} the same frozen meta-label model, consumed continuously: every
+        trade is sized $m_{i,t}=2\hat p^{\text{meta}}_{i,t}\in[0,2]$ ($p=0.5\mapsto1\times$); no trade
+        is ever added or removed.
+  \item \textbf{ML entry:} two classifiers estimate whether a long (short) bracket entered at $t$ with
+        stop $1.5\,$ATR and target $3\,$ATR hits the target first within 40 bars; the signal is the
+        direction whose probability is larger and $\geq0.5$. This replaces the control's entry rule.
+  \item \textbf{ML exit:} two classifiers estimate whether an open long (short) position is still
+        favourable 10 bars ahead; the position exits at the first bar where that probability falls
+        below 0.5, or at a $3\,$ATR safety stop. This replaces the control's exit rule.
+  \item \textbf{Meta-label + sizing (``Best Combined''):} meta-labeling filters, sizing re-weights the
+        survivors. In Study 1 this pairing was chosen after the fact; in Study 2 it was
+        \emph{pre-registered}, so its Study 2 result is an out-of-sample test of that choice.
+\end{itemize}

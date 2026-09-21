@@ -1,0 +1,60 @@
+\section{Research Gap and Related Work}
+
+Ablation studies of ML-augmented trading pipelines exist (e.g.\ a 2025 cross-sectional A-share
+turnover pipeline ablates its component modules and attributes annualized-return contribution per
+module; see Section~\ref{sec:related}), but they typically ablate \emph{modules of one specific
+proprietary pipeline architecture}, not \emph{insertion points of a single control mechanism into
+an already-fixed rule-based strategy} with identical features/model/hyperparameters held across
+every component. No work we found formalizes this constraint as a named, reusable methodology, runs
+the same feature set and model class through five distinct insertion points of one rule-based
+strategy with a uniform freeze/holdout/forward-tail protocol and bootstrap-CI significance testing
+at every insertion point, and reports the full grid of results --- including the (numerous) negative
+ones --- as a decision-support artifact rather than the single configuration that happened to look
+best. MBCA fills that gap: it is the methodology, not merely the experiment, that is missing from
+the literature.
+
+\label{sec:related}
+
+\textbf{Meta-labeling.} L\'opez de Prado's meta-labeling \citep{lopezdeprado2018afml} separates the
+``which direction'' decision (the primary model) from ``should I take this specific signal'' (a
+secondary classifier trained on realized outcomes) --- exactly the mechanism this paper's ML
+Meta-Labeling component implements, though the primary model here is a fixed rule (JMA crossover),
+not a learned one. In MBCA's taxonomy (Section~\ref{sec:taxonomy}), meta-labeling is a canonical
+\emph{narrowing} component: it can only reject decisions the primary system already made, never
+invent new ones.
+
+\textbf{Regime-conditioned and hybrid rule+ML systems.} A 2026 hybrid system integrating technical
+rules, ML, and financial sentiment for regime-adaptive equity strategies
+\citep{generatingalpha2026hybrid} reports aggregate improvements over a rule-only baseline but does
+not decompose which sub-component is responsible --- precisely the conflation MBCA is designed to
+resolve. A 2025 deep-learning-enhanced, multi-day-turnover A-share pipeline
+\citep{turnover2025ablation} is the closest methodological precedent we found: it ablates its five
+pipeline modules one at a time and reports each module's marginal contribution to annualized return
+--- the same spirit as MBCA's attribution table, but over a different, proprietary module set,
+without a uniform ML feature/model budget held across modules, without a named, reusable
+methodology, and without holdout-to-forward-tail generalization testing per module.
+
+\textbf{Position sizing and volatility-managed portfolios.} Moreira and Muir's volatility-managed
+portfolios \citep{moreira2017volmanaged} scale exposure by a \emph{realized-volatility} signal at
+the portfolio level; this paper's ML Position Sizing component instead scales exposure by a
+\emph{predicted-win-probability} signal at the individual-trade level --- another \emph{narrowing}
+component in MBCA's taxonomy, since it re-weights rather than rejects.
+
+\textbf{Time-series momentum.} Moskowitz, Ooi and Pedersen \citep{moskowitz2012momentum} is the
+standard reference for the rule-based trend-following family this paper's baseline belongs to; our
+contribution is orthogonal to theirs.
+
+\textbf{Technical trading rules and data snooping.} Simple moving-average and breakout rules have a
+long empirical record \citep{brock1992simple}, but their apparent profitability is highly sensitive to
+how many rules were searched: \citet{sullivan1999data} show that a bootstrap accounting for the full
+rule universe removes much of it, and \citet{harvey2016cross} argue for multiple-testing thresholds
+far above conventional ones. Study 2 therefore evaluates canonical, pre-registered rules rather than
+searched ones, compares Sharpe ratios with a dependence-robust paired bootstrap
+\citep{ledoit2008robust}, and controls the false-discovery rate across every test it runs.
+
+\textbf{Gap.} No work we found holds a rule-based strategy, its data, its features, its model
+class, and its evaluation protocol fixed while sweeping which single component ML replaces, names
+and formalizes that constraint as a reusable methodology, and reports every resulting
+configuration's forward-tested significance rather than the best one. MBCA is that methodology;
+this paper is its first full application.
+
