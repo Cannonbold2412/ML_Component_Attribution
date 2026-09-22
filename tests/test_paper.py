@@ -28,6 +28,20 @@ def test_every_input_and_figure_exists():
             assert (ROOT / fig).exists(), f"{f.name}: missing figure {fig}"
 
 
+def test_figures_are_drawn_at_their_print_width():
+    """Every figure is saved at 600 dpi at exactly the width the manuscript prints it, so none is rescaled and all
+    figure text keeps one size (7-8 pt) beside the 8 pt captions."""
+    from PIL import Image
+
+    for f in SOURCES:
+        text = _text(f)
+        sized = re.findall(r"\\includegraphics\[width=([\d.]+)in\]\{([^}]+)\}", text)
+        assert len(sized) == text.count("\\includegraphics"), f"{f.name}: give every figure an explicit width in inches"
+        for width, fig in sized:
+            drawn = Image.open(ROOT / fig).size[0] / 600
+            assert abs(drawn - float(width)) < 0.01 * float(width), f"{fig}: drawn {drawn:.3f}in, printed {width}in"
+
+
 def test_results_sections_contain_no_hand_typed_decimals():
     """Result sections may contain decimals only inside generated macros (e.g. no '+0.37' typed by hand)."""
     for name in ("04_study1.tex", "06_study2_results.tex", "09_conclusion.tex", "01_intro.tex"):

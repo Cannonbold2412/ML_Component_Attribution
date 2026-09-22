@@ -4,8 +4,8 @@
 
 Writes:
     paper/tex/numbers.tex     \\newcommand macros for every in-text number (Study 1 + Study 2)
-    paper/tex/s1_*.tex        Study 1 tables      paper/tex/s2_*.tex   Study 2 tables
-    paper/figures/s1_*.png    Study 1 figures     paper/figures/s2_*.png Study 2 figures
+    paper/tex/m_*.tex         method tables       paper/tex/s2_*.tex     Study 2 tables
+    paper/figures/*.png       every figure, in one house style (mbca.paper_figures)
 Macro names use letters only (pandoc's LaTeX reader expands plain \\newcommand macros).
 """
 from __future__ import annotations
@@ -65,18 +65,17 @@ def esc(s):
     return str(s).replace("_", "\\_").replace("%", "\\%").replace("&", "\\&").replace("^", "\\^{}")
 
 
-def longtable(path, caption, label, header, rows, align):
-    out = [f"\\begin{{longtable}}{{{align}}}",
-           f"\\caption{{{caption}}} \\label{{{label}}} \\\\", "\\toprule", " & ".join(header) + " \\\\",
-           "\\midrule", "\\endhead", "\\bottomrule", "\\endfoot"]
+def table(path, caption, label, header, rows, align, wide=False):
+    """A two-column-safe booktabs float: ``table`` (one column) or ``table*`` (full text width), caption on top."""
+    env = "table*" if wide else "table"
+    out = [f"\\begin{{{env}}}[!t]", "\\centering", f"\\caption{{{caption}}}", f"\\label{{{label}}}",
+           "\\footnotesize", f"\\begin{{tabular}}{{{align}}}", "\\toprule", " & ".join(header) + " \\\\", "\\midrule"]
     out += [" & ".join(map(str, r)) + " \\\\" for r in rows]
-    out.append("\\end{longtable}")
+    out += ["\\bottomrule", "\\end{tabular}", f"\\end{{{env}}}"]
     path.write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
 # =========================================================================== Study 1
-S1_KIND = {"ML Regime Filter": "independent", "ML Meta-Labeling": "narrowing", "ML Position Sizing": "narrowing",
-           "ML Entry": "replacing", "ML Exit": "replacing", "Combinations": "combination"}
 
 
 def compare_replication(paper: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
@@ -96,8 +95,6 @@ def compare_replication(paper: pd.DataFrame, rep: pd.DataFrame) -> pd.DataFrame:
 
 
 def study1(M: Macros) -> None:
-    from .report import forest_plot, matrix_plot
-
     import inspect
 
     from .strategy import bracket_exit, trailing_exit
@@ -152,25 +149,25 @@ def study1(M: Macros) -> None:
     M["SoneRepIndiaBase"] = f2(rb.loc[("indian_equities", "holdout")])
     mf = cmp_[(cmp_.market == "forex") & (cmp_.variant == "ML Meta-Labeling")].iloc[0]
     M["SoneMetaForexPaper"], M["SoneMetaForexRep"] = f2(mf.delta_sharpe_paper, True), f2(mf.delta_sharpe_rep, True)
+    M["SoneRepN"] = str(len(cmp_))
+    # The full per-configuration numbers are supplementary data (results/paper/component_attribution_table.csv,
+    # results/replication/paper_vs_replication.csv); the paper shows them as Figs. 4-6.
 
-    # tables
-    rows = [[esc(r.component), esc(r.variant), esc(r.market), r.window, f2(r.baseline_sharpe), f2(r.variant_sharpe),
-             f2(r.delta_sharpe, True), f"[{r.bootstrap_ci_lo:.3f}, {r.bootstrap_ci_hi:.3f}]",
-             "\\textbf{yes}" if r.significant else "no"] for r in p.itertuples()]
-    longtable(TEX / "s1_attribution.tex", "Study 1: all 60 configurations (original study results). CI = unpaired "
-              "i.i.d.\\ bootstrap of the per-day Sharpe difference.", "tab:s1", ["Component", "Variant", "Market",
-              "Window", "Base", "Variant", "$\\Delta$SR", "95\\% CI (per day)", "Sig."], rows, "l l l l r r r l l")
-    rows = [[esc(r.market), r.window, esc(r.variant), f2(r.delta_sharpe_paper, True), f2(r.delta_sharpe_rep, True),
-             "sig." if r.significant_paper else "n.s.", "sig." if r.significant_rep else "n.s."] for r in cmp_.itertuples()]
-    longtable(TEX / "s1_replication.tex", "Study 1: original results vs.\\ independent re-implementation "
-              "(annualized $\\Delta$Sharpe).", "tab:s1rep", ["Market", "Window", "Variant", "Original", "Replication",
-              "Orig.", "Repl."], rows, "l l l r r l l")
-    # figures (unit-corrected)
-    t = p.rename(columns={"variant_sharpe": "sharpe", "bootstrap_ci_lo": "ci_lo", "bootstrap_ci_hi": "ci_hi"})
-    t["kind"] = t["component"].map(S1_KIND)
-    t["variant"] = [v if c in ("ML Regime Filter", "Combinations") else c for c, v in zip(t.component, t.variant)]
-    forest_plot(t, FIG / "s1_forest.png", "Study 1: delta Sharpe vs rule-based baseline")
-    matrix_plot(t, FIG / "s1_matrix.png", "Study 1: ML Opportunity Matrix")
+
+def budget_table() -> None:
+    """Table II: the matched budget every learned component shares, read from the code that fits the models."""
+    from .features import FEATURE_COLS, LGBM_PARAMS
+    from .study import SMALL_MODEL
+
+    names = {"adx": "ADX", "atr_norm_mom": "ATR-normalized momentum", "hist_vol": "historical volatility",
+             "ret_zscore": "return $z$-score", "backward_r2": "backward-looking $R^2$", "rsi": "RSI",
+             "macd_hist": "MACD histogram", "kama_slope": "KAMA slope"}
+    rows = [["Features", ", ".join(names[c] for c in FEATURE_COLS) + f" ({len(FEATURE_COLS)}, backward-only)"],
+            ["Model", "LightGBM gradient-boosted trees on standardized features"]]
+    rows += [[esc(k), esc(v) if isinstance(v, str) else f"{v:g}"] for k, v in LGBM_PARAMS.items() if k != "verbosity"]
+    rows.append(["Small model (ablation)", ", ".join(f"{esc(k)} = {v:g}" for k, v in SMALL_MODEL.items())])
+    table(TEX / "m_budget.tex", "The matched budget shared by every learned component (read from the code).",
+          "tab:budget", ["Item", "Setting"], rows, "l p{5.2cm}")
 
 
 # =========================================================================== Study 2
@@ -179,9 +176,12 @@ def build() -> None:
     FIG.mkdir(exist_ok=True)
     M = Macros()
     study1(M)
+    budget_table()
     if (AN / "tests.csv").exists():
+        from .paper_figures import build as figures
         from .paper_study2 import study2
         study2(M)
+        figures(load_config())
     M.write(TEX / "numbers.tex")
     write_summary(M)
     print(f"wrote {len(M.d)} macros to {TEX / 'numbers.tex'}")

@@ -1,17 +1,20 @@
-\begin{longtable}{p{2.2cm} p{7cm} p{5.2cm}}
-\caption{Bias audit: each threat to validity, the test applied, and its outcome.} \label{tab:s2bias} \\
+\begin{table*}[!t]
+\centering
+\caption{Bias audit: each threat to validity, the test applied, and its outcome.}
+\label{tab:s2bias}
+\footnotesize
+\begin{tabular}{p{2.0cm} p{8.2cm} p{6.5cm}}
 \toprule
-Bias & Test & Outcome \\
+Threat & Test applied & Outcome \\
 \midrule
-\endhead
-\bottomrule
-\endfoot
 Look-ahead & Truncation invariance of every feature and every strategy signal (unit tests); regimes use $t-1$ data & pass (tests/test\_core.py, tests/test\_study2.py) \\
 Data leakage & All models fit once before the freeze; scrambling all post-freeze data leaves every model bit-identical; labels straddling the freeze excluded & pass (tests) \\
 Survivorship & Indices/ETFs/futures/FX analysed separately from current-constituent stocks and crypto & median $\Delta$SR meta-label+sizing: free \STwoSurvBestFree{} vs.\ prone \STwoSurvBestProne{} \\
 Selection & Universe, strategies, components, windows, statistics pre-registered in git before data existed; every variant reported & study.toml first committed in 8d9f50f, before all data/results \\
-Overfitting & Walk-forward parameter selection; deflated Sharpe; IS vs.\ OOS trade-return decay; two independent freezes & see Table~\ref{tab:s2decay} and freeze agreement in Table~\ref{tab:s2comp} \\
-Multiple testing & BH-FDR and Holm within families (528 market-level main tests) & raw $p<0.05$: \STwoMktRawSig{}; BH: \STwoMktSigGain{} gains / \STwoMktSigLoss{} losses; Holm: \STwoMktHolmSig{{}} \\
-Execution realism & Close-fill of breached stops (default), 1-day entry lag, cost $\times$0--4, per-market costs & Table~\ref{tab:s2robust} \\
+Overfitting & Walk-forward parameter selection; deflated Sharpe; IS vs.\ OOS trade-return decay; two independent freezes & Fig.~\ref{fig:s2decay}; freeze agreement in Table~\ref{tab:s2comp} \\
+Multiple testing & BH-FDR and Holm within families (528 market-level main tests) & raw $p<0.05$: \STwoMktRawSig{}; BH: \STwoMktSigGain{} gains / \STwoMktSigLoss{} losses; Holm: \STwoMktHolmSig{} \\
+Execution realism & Close-fill of breached stops (default), 1-day entry lag, cost $\times$0--4, per-market costs & Fig.~\ref{fig:s2robust} \\
 Data errors & Two independent sources (FRED) + browser spot-check (MarketWatch) & 5-day return corr.\ \STwoFredCorrFiveMin{}--\STwoFredCorrFiveMax{}; spot-check max diff \STwoSpotMaxDiff{} \\
-\end{longtable}
+\bottomrule
+\end{tabular}
+\end{table*}

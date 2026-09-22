@@ -1,16 +1,19 @@
-\begin{longtable}{p{2.6cm} l r r r r r r r r r}
-\caption{Component attribution across the universe. Market-level tests: every strategy $\times$ market $\times$ freeze. Sig.\ $+$/$-$ = BH-FDR $q<0.05$ within the family. Freeze agreement = share of strategy $\times$ market cells whose $\Delta$SR has the same sign in both independent freezes.} \label{tab:s2comp} \\
+\begin{table*}[!t]
+\centering
+\caption{Component attribution across the universe. Market-level tests: every strategy $\times$ market $\times$ freeze. Sig.\ $+$/$-$ = BH-FDR $q<0.05$ within the family. Global = all-market portfolio (strategy $\times$ freeze). Freeze agreement = share of strategy $\times$ market cells whose $\Delta$SR has the same sign in both independent freezes. $\Delta$Turn.\ in capital/year.}
+\label{tab:s2comp}
+\footnotesize
+\begin{tabular}{l l r r r r r r r r r}
 \toprule
 Component & Type & Tests & $\Delta$SR$>0$ & Median $\Delta$SR & Sig.$+$ & Sig.$-$ & Global median & Global $>0$ & Freeze agree & $\Delta$Turn. \\
 \midrule
-\endhead
-\bottomrule
-\endfoot
 Rule ADX gate & rule & 80 & 46.2\% & -0.01 & 0 & 1 & -0.02 & 5/10 & 60.0\% & -2.36 \\
-ML regime filter & independent & 75 & 45.3\% & -0.01 & 0 & 0 & -0.02 & 5/10 & 45.0\% & -3.39 \\
-ML meta-labeling & narrowing & 74 & 67.6\% & +0.12 & 1 & 0 & +0.08 & 6/10 & 66.7\% & -4.42 \\
-ML position sizing & narrowing & 75 & 70.7\% & +0.05 & 0 & 0 & +0.03 & 6/10 & 47.5\% & -1.67 \\
-ML entry & replacing & 75 & 40.0\% & -0.15 & 0 & 8 & -0.24 & 2/10 & 65.0\% & +9.54 \\
-ML exit & replacing & 75 & 48.0\% & -0.03 & 6 & 1 & -0.17 & 3/10 & 65.0\% & +4.87 \\
-Meta-label + sizing & combination & 74 & 67.6\% & +0.12 & 1 & 0 & +0.08 & 6/10 & 66.7\% & -2.79 \\
-\end{longtable}
+ML regime filter & independent & 75 & 45.3\% & -0.01 & 0 & 0 & -0.02 & 5/10 & 51.4\% & -3.39 \\
+ML meta-labeling & narrowing & 74 & 67.6\% & +0.12 & 1 & 0 & +0.08 & 6/10 & 74.3\% & -4.42 \\
+ML position sizing & narrowing & 75 & 70.7\% & +0.05 & 0 & 0 & +0.03 & 6/10 & 54.3\% & -1.67 \\
+ML entry & replacing & 75 & 40.0\% & -0.15 & 0 & 8 & -0.24 & 2/10 & 74.3\% & +9.54 \\
+ML exit & replacing & 75 & 48.0\% & -0.03 & 6 & 1 & -0.17 & 3/10 & 74.3\% & +4.87 \\
+Meta-label + sizing & combination & 74 & 67.6\% & +0.12 & 1 & 0 & +0.08 & 6/10 & 74.3\% & -2.79 \\
+\bottomrule
+\end{tabular}
+\end{table*}

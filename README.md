@@ -1,9 +1,9 @@
 # ML Component Attribution (MBCA)
 
 **Where should machine learning go in a hybrid trading system?**
-This repository contains the paper *"Where Should Machine Learning Go in Hybrid Trading Systems?
+This repository contains the paper *"Where Should Machine Learning Enter a Rule-Based Trading System?
 Matched-Budget Component Attribution Across Five Strategies and 153 Instruments"*
-([`paper/MBCA_paper.pdf`](paper/MBCA_paper.pdf), Version 5). It also contains the complete, auditable research
+([`paper/MBCA_paper.pdf`](paper/MBCA_paper.pdf), Version 6, IEEE two-column format). It also contains the complete, auditable research
 pipeline behind it, and a tested Python package, `mbca`, that runs the method on **your own strategy** in a few lines.
 
 **Code, data, experiments and paper are one system.** A single pre-registered configuration file
@@ -100,7 +100,7 @@ python -m mbca study validate   # Yahoo vs FRED cross-check
 python -m mbca study run        # every pre-registered experiment (~50 min on 11 cores); refuses a dirty git tree
 python -m mbca study analyze    # all statistics -> results/study2/analysis/
 python -m mbca study paper      # every table, figure and number -> paper/tex, paper/figures, results/SUMMARY.md
-python paper/build_pdf.py       # (or compile paper/MBCA_paper.tex with LaTeX / Overleaf)
+python paper/build_pdf.py       # IEEE PDF via Tectonic + IEEE-styled DOCX (or compile MBCA_paper.tex on Overleaf)
 ```
 
 The raw and clean data, the trades of the reported run, and all analysis outputs are committed, so every step
@@ -134,7 +134,7 @@ study.toml       pre-registered Study 2 design: the single source of truth
 data/            Study 1 bundled data (forex, commodities, indian_equities) and data/study2/{raw,clean,validation}
 results/paper/   Study 1 original results        results/replication/   Study 1 independent re-implementation
 results/study2/  Study 2 trades, run manifests, analysis     results/SUMMARY.md   generated key numbers
-paper/           manuscript v5: MBCA_paper.tex + sections/, generated tex/ and figures/, PDF, build script
+paper/           manuscript v6 (IEEEtran): MBCA_paper.tex + sections/, generated tex/ and figures/, PDF, build
 docs/            EXPERIMENT_LOG.md (decisions, deviations, audit checks)
 tests/           look-ahead, leakage/freeze, execution realism, MTM accounting, bootstrap size/power, paper sync
 ERRATA.md        what changed from earlier drafts and why
@@ -183,9 +183,9 @@ This is a research method and a negative-results paper. Nothing here is a valida
 
 ```
 @misc{mbca2026,
-  title  = {Where Should Machine Learning Go in Hybrid Trading Systems? Matched-Budget Component Attribution Across Five Strategies and 153 Instruments},
+  title  = {Where Should Machine Learning Enter a Rule-Based Trading System? Matched-Budget Component Attribution Across Five Strategies and 153 Instruments},
   year   = {2026},
-  note   = {Version 5. Code, data and pipeline: https://github.com/Cannonbold2412/ML_Component_Attribution}
+  note   = {Version 6. Code, data and pipeline: https://github.com/Cannonbold2412/ML_Component_Attribution}
 }
 ```
 

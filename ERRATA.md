@@ -69,3 +69,20 @@ gains, 20 significant losses).
   look much worse than realistic fills do. Study 1's "ML exit is harmful" finding is partly an
   artifact of this, and the finding is also strategy-specific: ML exit significantly *improves*
   RSI(2) mean reversion in 6 markets (paper v5, Section 6).
+
+## 7. Found while building Version 6 (IEEE two-column rewrite)
+
+* **Freeze sign agreement was understated.** The share of strategy x market cells whose delta Sharpe has the same
+  sign in both freezes counted cells observed in only one freeze (crypto has no F2008 cell) as disagreements. It is
+  now computed over cells observed in both freezes, like the cross-freeze correlation already was. Corrected values:
+  meta-labeling, meta-label + sizing, ML entry and ML exit 74.3% (previously 66.7%, 66.7%, 65.0%, 65.0%); ML regime
+  filter 51.4% (45.0%); position sizing 54.3% (47.5%); ADX gate unchanged at 60.0%. The reading is unchanged: the
+  regime filter and sizing replicate close to chance, and the large effects (entry, exit) replicate best in size
+  (cross-freeze correlations 0.69 and 0.70, unchanged).
+* **Cost-multiplier macro.** `\times` was written in a non-raw Python string, so `\t` became a tab and the
+  manuscript printed "imes0" instead of "×0". Fixed; no number changed.
+* **Presentation.** The long per-configuration tables (Study 1: 60 + 60 rows; Study 2: 70-row before/after,
+  ~80-row risk profile, crises, regimes, robustness, decay) were replaced by figures; the numbers remain in
+  `results/` as supplementary data. The "Errata" appendix moved here, the Study 1 conventions became Appendix B,
+  and the decision-guide figure was redrawn from the Study 2 test results (the v4 guide's "avoid ML exit" verdict
+  no longer holds for mean-reversion rules).

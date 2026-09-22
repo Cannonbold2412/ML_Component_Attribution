@@ -1,17 +1,20 @@
-\begin{longtable}{l r l l r r l}
-\caption{Study 2 universe after cleaning (Yahoo Finance daily data, cross-checked against FRED and MarketWatch). Cost = round-trip transaction cost + slippage in bps.} \label{tab:s2data} \\
+\begin{table}[!t]
+\centering
+\caption{Study 2 universe after cleaning (Yahoo Finance daily bars to \STwoLast{}, cross-checked against FRED and MarketWatch). Cost = round-trip cost plus slippage (bps).}
+\label{tab:s2data}
+\footnotesize
+\begin{tabular}{l r l r r l}
 \toprule
-Market & N & First & Last & Median rows & Cost (bps) & Survivorship-free \\
+Market & N & First bar & Median bars & Cost & Surv.-free \\
 \midrule
-\endhead
+Equity indices & 28 & 2000-01-03 & 6,654 & 5 & yes \\
+Equity ETFs & 19 & 2000-01-03 & 6,719 & 5 & yes \\
+Fixed income & 11 & 2000-09-21 & 6,075 & 5 & yes \\
+Commodities & 19 & 2000-01-03 & 6,542 & 5 & yes \\
+FX & 18 & 2000-01-03 & 5,929 & 3 & yes \\
+Crypto & 4 & 2014-09-17 & 3,813 & 20 & \textbf{no} \\
+US stocks & 20 & 2000-01-03 & 6,719 & 10 & \textbf{no} \\
+Intl stocks & 34 & 2000-01-03 & 6,711 & 10 & \textbf{no} \\
 \bottomrule
-\endfoot
-Equity indices & 28 & 2000-01-03 & 2026-09-21 & 6,654 & 5 & yes \\
-Equity ETFs & 19 & 2000-01-03 & 2026-09-21 & 6,719 & 5 & yes \\
-Fixed income & 11 & 2000-09-21 & 2026-09-21 & 6,075 & 5 & yes \\
-Commodities & 19 & 2000-01-03 & 2026-09-21 & 6,542 & 5 & yes \\
-FX & 18 & 2000-01-03 & 2026-09-21 & 5,929 & 3 & yes \\
-Crypto & 4 & 2014-09-17 & 2026-09-21 & 3,813 & 20 & \textbf{no} \\
-US stocks & 20 & 2000-01-03 & 2026-09-21 & 6,719 & 10 & \textbf{no} \\
-Intl stocks & 34 & 2000-01-03 & 2026-09-21 & 6,711 & 10 & \textbf{no} \\
-\end{longtable}
+\end{tabular}
+\end{table}

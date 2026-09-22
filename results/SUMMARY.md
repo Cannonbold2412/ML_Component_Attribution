@@ -18,12 +18,12 @@ Every number below comes from the same macros the paper uses (`paper/tex/numbers
 | Component | Market-level tests | delta Sharpe > 0 | Median delta Sharpe | Sig. gains | Sig. losses | Sign agreement across freezes |
 |---|---|---|---|---|---|---|
 | Rule ADX gate | 80 | 46.2% | -0.01 | 0 | 1 | 60.0% |
-| ML regime filter | 75 | 45.3% | -0.01 | 0 | 0 | 45.0% |
-| ML meta-labeling | 74 | 67.6% | +0.12 | 1 | 0 | 66.7% |
-| ML position sizing | 75 | 70.7% | +0.05 | 0 | 0 | 47.5% |
-| ML entry | 75 | 40.0% | -0.15 | 0 | 8 | 65.0% |
-| ML exit | 75 | 48.0% | -0.03 | 6 | 1 | 65.0% |
-| Meta-label + sizing | 74 | 67.6% | +0.12 | 1 | 0 | 66.7% |
+| ML regime filter | 75 | 45.3% | -0.01 | 0 | 0 | 51.4% |
+| ML meta-labeling | 74 | 67.6% | +0.12 | 1 | 0 | 74.3% |
+| ML position sizing | 75 | 70.7% | +0.05 | 0 | 0 | 54.3% |
+| ML entry | 75 | 40.0% | -0.15 | 0 | 8 | 74.3% |
+| ML exit | 75 | 48.0% | -0.03 | 6 | 1 | 74.3% |
+| Meta-label + sizing | 74 | 67.6% | +0.12 | 1 | 0 | 74.3% |
 
 * Significance = Benjamini-Hochberg q < 0.05 on a paired circular-block bootstrap of delta Sharpe.
   Across all 528 market-level tests: 99 raw p < 0.05, 8 significant
