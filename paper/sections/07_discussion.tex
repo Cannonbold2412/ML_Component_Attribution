@@ -1,0 +1,48 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The Taxonomy Predicts the Variance, Not the Sign}
+
+Narrowing components, which can only remove or re-weight decisions the rule already makes, produced the smallest and
+most consistently positive effects in both studies, and in Study~2 not a single significantly negative one. Replacing
+components produced the largest effects in both directions. The ex-ante hypothesis of Section~\ref{sec:taxonomy} is
+therefore supported. What the taxonomy does not predict is \emph{which} direction a replacing component takes; that
+depends on how well the replaced mechanism fits the strategy. A learned continuation exit is redundant for
+trend-followers, whose trailing stops already let winners run, but it repairs a genuine weakness of a mean-reversion
+rule whose fixed profit target truncates them. Symmetrically, a learned entry that finds trends is a poor substitute
+for a rule designed to fade them. MBCA's practical output is therefore a question to ask of each insertion point:
+\emph{does the learned model address a known weakness of the rule it replaces?}
+
+\subsection{What Study~1 Got Right and Wrong}
+
+Study~2 confirms Study~1's central conclusion---no component reliably and significantly improves a trend-following
+control at this budget---and its taxonomy-level reading. It revises three specifics. ML exit is not intrinsically
+harmful: its Study~1 losses were inflated by optimistic stop fills and are specific to trend-following rules. The
+meta-label + sizing pairing, pre-registered in Study~2 as an out-of-sample test of a post hoc choice, is positive in
+most cells but significant in only \STwoMktBestGain{} of \STwoMktBestN{}. And the forex-specific claims of Study~1 do
+not survive a change of data vendor.
+
+\subsection{Why the Effects Are Small}
+
+The controls themselves have little out-of-sample edge (Fig.~\ref{fig:s2decay}), and a matched budget of eight generic
+price features gives a learned component little information that the rule does not already use. Where the rule has a
+structural weakness, such as the RSI(2) exit, ML finds it; where it does not, the best a narrowing component can do is
+trade a little less. This is consistent with the data-snooping literature \cite{sullivan1999data,park2007technical}:
+once rules are fixed in advance and evaluated under realistic costs, the room for improvement is small.
+
+\subsection{Practical Implications}
+
+Fig.~\ref{fig:decision} condenses the evidence into a decision guide for a practitioner with a rule-based system.
+Prefer narrowing components, and expect them to reduce turnover and exposure more than to raise the Sharpe ratio. Use
+a replacing component only where the replaced rule has an identifiable weakness, and test it under realistic fills and
+costs. Evaluate every variant with conservative execution before attributing anything to ML, because execution
+assumptions move the Sharpe ratio more than any component. Finally, require replication at a second, independent
+freeze date before acting on a single-window improvement.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=7.14in]{figures/s2_decision.png}
+\caption{Decision guide for adding ML to a rule-based system, condensing the evidence of both studies per insertion
+point. Every number in the boxes is computed from the Study~2 test results by the pipeline.}
+\label{fig:decision}
+\end{figure*}

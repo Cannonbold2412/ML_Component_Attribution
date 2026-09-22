@@ -1,0 +1,34 @@
+\appendices
+
+\section{Reproducibility and Provenance}
+\label{app:repro}
+
+The chain from raw bytes to every number in this paper has five steps, each a command of the released package:
+\begin{enumerate}
+  \item \texttt{study.toml}: the pre-registered design and the only configuration the code reads.
+  \item \texttt{mbca study fetch}, \texttt{clean}, and \texttt{validate}: raw API responses with URL, UTC timestamp,
+        and SHA-256 hash; cleaned series with per-rule row counts and hashes; and cross-source validation reports.
+  \item \texttt{mbca study run}: refuses to start with uncommitted code, configuration, or data, and writes every
+        out-of-sample trade together with a run manifest (git commit, configuration and data hashes, package
+        versions, thread settings, and per-task timings).
+  \item \texttt{mbca study analyze}: every statistic, written to \texttt{results/study2/analysis/}.
+  \item \texttt{mbca study paper}: every table, figure, and in-text number of this manuscript, which contains no
+        hand-typed result.
+\end{enumerate}
+Human decisions and deviations are recorded in an experiment log, and the version history shows that the
+configuration file precedes all Study~2 data and results. The test suite enforces every methodological invariant: no
+look-ahead in features, strategies, or regime labels; freeze integrity (scrambling all post-freeze data leaves every
+fitted model bit-for-bit identical); one insertion point per component; fill realism; mark-to-market accounting; and
+the size and power of the bootstrap. The Study~1 results are the original study's output files, shipped verbatim.
+
+\section{Study 1 Statistical Conventions}
+\label{app:s1stats}
+
+Study~1 retains the conventions of the original study so that its results are reported as they were produced. Each
+variant's trades are converted to a realized-at-exit daily series, and each daily series is resampled independently
+and i.i.d.\ (2{,}000 resamples); the reported CI is that of the difference in \emph{per-day} Sharpe ratios. The CI
+bounds are therefore $\sqrt{252} \approx \SqrtAnn$ times smaller than the annualized $\Delta$Sharpe reported beside
+them, and the forest plot of Fig.~\ref{fig:s1forest} rescales them by $\sqrt{252}$ so that point and interval share
+one axis. Because this test ignores both the pairing of the two series and their serial dependence, Study~2 replaces
+it with the paired circular-block bootstrap of Section~\ref{sec:inference} and reports mark-to-market rather than
+realized-at-exit portfolios.

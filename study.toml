@@ -1,0 +1,225 @@
+# =============================================================================
+# STUDY 2 -- PRE-REGISTRATION AND SINGLE SOURCE OF TRUTH
+# =============================================================================
+# Every data download, experiment, table, figure, and number in the paper for
+# Study 2 is produced from this file by `python -m mbca study ...`.
+# It was committed to git BEFORE any Study 2 data was downloaded or any Study 2
+# result existed (see `git log -- study.toml`), so universe, strategies,
+# components, windows, costs and tests cannot have been chosen after seeing results.
+# Any later edit is visible in git history and must be recorded in
+# docs/EXPERIMENT_LOG.md with its reason.
+# =============================================================================
+
+[study]
+name = "MBCA Study 2: five historical strategies across a broad market universe"
+data_start = "2000-01-01"
+bars_per_year = 252
+risk_free_rate = 0.0          # multi-currency universe: Sharpe on raw (not excess) returns
+seed = 0
+
+# Two independent freezes -> two non-overlapping out-of-sample test windows,
+# each with its own frozen ML models (the "second freeze date" replication the
+# original paper named as its most important missing test).
+[[study.freezes]]
+name = "F2008"
+split = "2008-01-01"          # ML trained on 2000-2007
+test_end = "2018-01-01"       # tested 2008-2017 (GFC, euro crisis, 2015-16 selloff)
+
+[[study.freezes]]
+name = "F2018"
+split = "2018-01-01"          # ML trained on 2000-2017
+test_end = "2100-01-01"       # tested 2018-latest (COVID crash, 2022 bear)
+
+# -----------------------------------------------------------------------------
+# UNIVERSE. Yahoo Finance symbols grouped into asset-class "markets"; each
+# market's ML models are fit on that market's pooled pre-freeze data.
+# Survivorship: indices, ETFs, futures, FX and crypto series are free of
+# constituent survivorship; single stocks are CURRENT large caps and therefore
+# survivorship-biased by construction -- analysed separately (bias test B3).
+# -----------------------------------------------------------------------------
+[universe.equity_indices]
+cost_bps = 5
+survivorship_free = true
+tickers = ["^GSPC", "^DJI", "^IXIC", "^RUT", "^GSPTSE", "^BVSP", "^MXX", "^MERV",
+           "^FTSE", "^GDAXI", "^FCHI", "^STOXX50E", "^AEX", "^IBEX", "^SSMI",
+           "^N225", "^HSI", "000001.SS", "^KS11", "^TWII", "^AXJO", "^NZ50",
+           "^NSEI", "^BSESN", "^STI", "^JKSE", "^KLSE", "^TA125.TA"]
+
+[universe.equity_etfs]
+cost_bps = 5
+survivorship_free = true
+tickers = ["XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY",
+           "EWJ", "EWG", "EWU", "EWC", "EWA", "EWZ", "EWH", "EWY", "EWT", "EWW"]
+
+[universe.fixed_income]
+cost_bps = 5
+survivorship_free = true
+tickers = ["TLT", "IEF", "SHY", "LQD", "HYG", "TIP", "AGG", "EMB", "ZN=F", "ZB=F", "ZF=F"]
+
+[universe.commodities]
+cost_bps = 5
+survivorship_free = true
+tickers = ["GC=F", "SI=F", "HG=F", "PL=F", "PA=F", "CL=F", "BZ=F", "NG=F", "HO=F", "RB=F",
+           "ZC=F", "ZW=F", "ZS=F", "KC=F", "SB=F", "CC=F", "CT=F", "LE=F", "HE=F"]
+
+[universe.fx]
+cost_bps = 3
+survivorship_free = true
+tickers = ["EURUSD=X", "GBPUSD=X", "USDJPY=X", "AUDUSD=X", "USDCAD=X", "USDCHF=X",
+           "NZDUSD=X", "EURJPY=X", "EURGBP=X", "AUDNZD=X", "CADJPY=X", "USDINR=X",
+           "USDBRL=X", "USDMXN=X", "USDZAR=X", "USDSGD=X", "USDKRW=X", "USDTRY=X"]
+
+[universe.crypto]
+cost_bps = 20
+survivorship_free = false     # survivors of a large dead-coin population
+tickers = ["BTC-USD", "ETH-USD", "LTC-USD", "XRP-USD"]
+
+[universe.stocks_us]
+cost_bps = 10
+survivorship_free = false
+tickers = ["AAPL", "MSFT", "AMZN", "JPM", "XOM", "JNJ", "PG", "KO", "WMT", "GE",
+           "IBM", "INTC", "CSCO", "PFE", "CVX", "BA", "CAT", "MMM", "MRK", "HD"]
+
+[universe.stocks_intl]
+cost_bps = 10
+survivorship_free = false
+tickers = ["SAP.DE", "SIE.DE", "ALV.DE", "NESN.SW", "NOVN.SW", "ROG.SW", "MC.PA", "TTE.PA",
+           "SAN.PA", "ASML.AS", "SHEL.L", "HSBA.L", "BP.L", "AZN.L", "ULVR.L",
+           "7203.T", "6758.T", "9984.T", "8306.T", "005930.KS", "2330.TW", "0700.HK",
+           "0005.HK", "RELIANCE.NS", "TCS.NS", "INFY.NS", "HDFCBANK.NS", "BHP.AX",
+           "CBA.AX", "RY.TO", "TD.TO", "ENB.TO", "VALE3.SA", "PETR4.SA", "ITUB4.SA"]
+
+# Second, independent source used only to cross-validate Yahoo prices (bias test B1).
+[validation.fred]
+"EURUSD=X" = "DEXUSEU"
+"GBPUSD=X" = "DEXUSUK"
+"USDJPY=X" = "DEXJPUS"
+"USDCAD=X" = "DEXCAUS"
+"USDCHF=X" = "DEXSZUS"
+"AUDUSD=X" = "DEXUSAL"
+"NZDUSD=X" = "DEXUSNZ"
+"USDINR=X" = "DEXINUS"
+"USDBRL=X" = "DEXBZUS"
+"USDMXN=X" = "DEXMXUS"
+"USDKRW=X" = "DEXKOUS"
+"^GSPC" = "SP500"
+"^DJI" = "DJIA"
+"^IXIC" = "NASDAQCOM"
+"CL=F" = "DCOILWTICO"
+"BZ=F" = "DCOILBRENTEU"
+"NG=F" = "DHHNGSP"
+
+# -----------------------------------------------------------------------------
+# DATA CLEANING RULES (applied identically to every series; see mbca/datasets.py)
+# -----------------------------------------------------------------------------
+[cleaning]
+use_adjusted = true           # scale O/H/L/C by adjclose/close (splits + dividends)
+drop_nonpositive = true       # rows with any price <= 0 or missing close are dropped
+repair_ohlc = true            # enforce low <= min(open,close) <= max(open,close) <= high
+max_abs_daily_return = 0.75   # |return| above this is flagged as a bad tick and the row dropped
+min_rows = 1000               # series shorter than ~4 years are excluded from Study 2
+
+# -----------------------------------------------------------------------------
+# FIVE HISTORICALLY DOCUMENTED STRATEGIES (canonical parameters + a small grid
+# that the walk-forward harness selects from on each in-sample fold)
+# -----------------------------------------------------------------------------
+[strategies.jma_trend]
+label = "JMA crossover (paper baseline)"
+reference = "Study 1 baseline; Jurik moving average crossover"
+signal = "jma_cross"
+signal_grid = { fast = [5, 7, 9], slow = [21, 28] }
+exit = "trailing"
+stop_grid = { sl_mult = [1.5, 2.0], trail_mult = [2.0, 3.0] }
+min_trades = 10
+
+[strategies.sma_cross]
+label = "Dual moving-average crossover"
+reference = "Brock, Lakonishok & LeBaron (1992)"
+signal = "sma_cross"
+signal_grid = { fast = [20, 50], slow = [100, 200] }
+exit = "trailing"
+stop_grid = { sl_mult = [2.0, 3.0], trail_mult = [3.0, 4.0] }
+min_trades = 4
+
+[strategies.donchian]
+label = "Donchian channel breakout"
+reference = "Turtle trading rules (Dennis/Eckhardt); Donchian (1960)"
+signal = "donchian"
+signal_grid = { lookback = [20, 55] }
+exit = "trailing"
+stop_grid = { sl_mult = [2.0], trail_mult = [2.0, 3.0] }
+min_trades = 6
+
+[strategies.ts_momentum]
+label = "Time-series momentum"
+reference = "Moskowitz, Ooi & Pedersen (2012)"
+signal = "ts_momentum"
+signal_grid = { lookback = [126, 252] }
+exit = "trailing"
+stop_grid = { sl_mult = [2.0, 3.0], trail_mult = [3.0, 4.0] }
+min_trades = 4
+
+[strategies.rsi2_reversion]
+label = "RSI(2) short-term mean reversion"
+reference = "Connors & Alvarez (2008)"
+signal = "rsi2"
+signal_grid = { entry = [5, 10] }
+exit = "bracket"
+stop_grid = { sl_mult = [2.0, 3.0], tp_mult = [1.0, 1.5] }
+min_trades = 10
+
+# -----------------------------------------------------------------------------
+# MBCA COMPONENTS (matched budget: same 8 features, same LightGBM for all)
+# Regime filter uses the "linearity" label only -- fixed here, not selected.
+# -----------------------------------------------------------------------------
+[components]
+main = ["rule_adx", "regime_linearity", "meta_label", "position_sizing", "entry", "exit", "best_combined"]
+# cross-market generalization: models fit on every OTHER market, applied to this one
+transfer = ["meta_label", "best_combined"]
+# ablations of the ML budget itself
+ablations = ["meta_label_thr045", "meta_label_thr055", "meta_label_small_model", "exit_small_model"]
+
+# -----------------------------------------------------------------------------
+# EXECUTION MODEL
+# -----------------------------------------------------------------------------
+[execution]
+fill = "close"                # stop breached on a close -> filled AT THAT CLOSE (not at the stop level)
+lag = 0                       # 0 = enter at the signal bar's close
+n_splits = 5                  # walk-forward folds per instrument
+portfolio = "equal_weight"    # capital split 1/N across instruments with data that day; MTM daily
+
+# Execution-assumption sensitivity (re-runs; bias test B6)
+[[execution.sensitivity]]
+name = "optimistic_stop_fill"
+fill = "stop"
+lag = 0
+variants = ["baseline", "exit", "best_combined"]
+
+[[execution.sensitivity]]
+name = "one_day_lag"
+fill = "close"
+lag = 1
+variants = ["baseline", "exit", "best_combined"]
+
+# -----------------------------------------------------------------------------
+# STATISTICS
+# -----------------------------------------------------------------------------
+[statistics]
+bootstrap = "paired_circular_block"   # same days resampled for variant and baseline
+block_days = 20
+n_boot = 2000
+alpha = 0.05
+fdr = "benjamini_hochberg"            # across every (strategy, market, freeze, variant) test
+cost_multipliers = [0.0, 1.0, 2.0, 4.0]
+
+# Regimes (computed from information available at t-1 only)
+[regimes]
+trend_sma_days = 200                  # market EW index above/below its 200-day SMA
+vol_window_days = 20                  # realized vol above/below its expanding median
+crises = [
+  { name = "GFC", start = "2008-09-01", end = "2009-03-31" },
+  { name = "Euro debt crisis", start = "2011-07-01", end = "2011-12-31" },
+  { name = "2015-16 selloff", start = "2015-08-01", end = "2016-02-29" },
+  { name = "COVID crash", start = "2020-02-19", end = "2020-04-30" },
+  { name = "2022 bear market", start = "2022-01-01", end = "2022-10-31" },
+]

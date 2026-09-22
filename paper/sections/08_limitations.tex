@@ -1,0 +1,27 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\emph{One budget.} Every conclusion concerns eight backward-looking price features and one gradient-boosting
+configuration. The ablations show that the conclusions are stable to the decision threshold and to a much smaller
+model, but richer information---fundamentals, order flow, cross-sectional or alternative data---could change them.
+MBCA is the protocol for testing that fairly, not a claim that the space of learned components is exhausted.
+
+\emph{Daily closes only.} Signals, stops, and fills use daily closes, so intraday stop hits are not modelled. The
+close-fill convention is conservative relative to stop-level fills, but overnight gaps and liquidity at the open are
+not simulated.
+
+\emph{Data.} Study~2 relies on one primary vendor, cross-checked against FRED and MarketWatch. Continuous futures are
+unadjusted front-month rolls; single stocks are current large capitalizations and the crypto series are surviving
+coins. These survivorship-prone markets are analysed separately and do not drive the conclusions, and one planned
+symbol was unavailable.
+
+\emph{Portfolio construction.} Equal weighting across instruments with daily mark-to-market accounting is transparent
+but simple. Volatility targeting or risk parity would change the absolute numbers, though not the paired
+variant-versus-control design.
+
+\emph{Statistics.} The block bootstrap assumes stationarity within each window, and FDR control is applied within
+pre-defined families rather than across the whole study. Most market-level effects are fragile to dropping a single
+instrument; only the significant ones are shown to be robust to it.
+
+\emph{Scope.} The evidence covers five rule families on daily data. MBCA itself is domain agnostic, but we have not
+applied it outside trading.

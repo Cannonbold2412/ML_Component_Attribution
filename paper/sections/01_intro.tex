@@ -1,0 +1,66 @@
+\section{Introduction}
+\label{sec:intro}
+
+Machine learning (ML) has become a standard tool of empirical finance \cite{gu2020empirical}, and a common way to
+use it in trading is to attach a learned model to a rule-based strategy that is already understood and validated
+\cite{lopezdeprado2018afml,joubert2022metalabeling}. The evidence offered for such hybrid systems is usually a single
+comparison: the hybrid against the rule-based baseline, summarized by one difference in Sharpe ratio. That comparison
+answers whether the hybrid performed better in one backtest. It does not answer the question a designer actually faces,
+namely \emph{at which decision} a learned model should replace the rule.
+
+A hybrid pipeline has several natural insertion points: whether a bar is admissible for trading (a regime filter),
+whether a fired signal should be taken (meta-labeling), how much to risk on it (position sizing), when to enter, and
+when to exit. An aggregate before-and-after comparison cannot attribute an improvement or a loss to any one of them.
+It is also confounded in ways that are easy to overlook: each learned component typically receives its own features,
+tuning budget, and evaluation window, so a difference between two hybrids can reflect feature engineering or
+evaluation leniency rather than the insertion point. Finally, the literature on technical trading rules shows that
+apparent performance is fragile to the number of configurations searched
+\cite{sullivan1999data,white2000reality,harvey2016cross}; reporting the one hybrid that looked best compounds that
+problem.
+
+This paper introduces \emph{matched-budget component attribution} (MBCA), a controlled-variable protocol for this
+question. MBCA holds the data, the feature set, the model class and its hyperparameters, the freeze discipline, and
+the evaluation protocol fixed, and varies only which single decision of a validated rule-based system a learned model
+replaces. Because everything else is matched, a change in performance can be attributed to the insertion point
+itself, and a null result is a precise statement about the stated budget at that insertion point.
+
+We apply MBCA twice. \emph{Study~1} applies it to one validated strategy, a Jurik moving-average (JMA) crossover, in
+three markets and finds \SoneSigGain{} significant improvements and \SoneSigLoss{} significant losses among
+\SoneConfigs{} configurations; an independent re-implementation reproduces this headline but not its market-level
+claims. \emph{Study~2} is a pre-registered test \cite{nosek2018preregistration} of whether Study~1 generalizes. Its
+design was committed to version control before any of its data existed, and it evaluates five historically documented
+strategies on \STwoInstruments{} daily series across \STwoMarkets{} asset-class markets, at two independent freeze
+dates, under conservative execution, with mark-to-market portfolio accounting and a paired block-bootstrap test with
+false-discovery-rate (FDR) control.
+
+The paper makes four contributions:
+\begin{enumerate}
+  \item \emph{Method.} MBCA and a taxonomy of insertion points (independent, narrowing, replacing) that predicts how
+        much a component can change a rule-based system.
+  \item \emph{Evidence.} \STwoMktTests{} pre-registered market-level tests of five insertion points and one
+        combination across five strategy families, with replication at a second freeze and a battery of
+        generalization, robustness, and bias checks.
+  \item \emph{Auditability.} One configuration file drives data collection, every experiment, and every table,
+        figure, and in-text number; a test suite enforces the methodological invariants and fails if the manuscript
+        contains a hand-typed result.
+  \item \emph{Software.} An open-source implementation with which practitioners can apply MBCA to their own strategy
+        and data.
+\end{enumerate}
+
+The evidence can be summarized in five findings. First, once multiplicity is controlled, ML rarely changes a
+historically successful rule significantly: \STwoMktSigGain{} significant gains and \STwoMktSigLoss{} significant
+losses in \STwoMktTests{} tests. Second, narrowing components (meta-labeling and position sizing) are the only ones
+that are directionally positive in most cells and never significantly harmful, and their effect transfers across
+markets; it is, however, small and replicates only partially across freezes. Third, replacing components are strategy
+dependent: ML entry is the most harmful component, whereas ML exit, which is negative on average for
+trend-followers, is the only component that significantly improves a strategy in several markets, in each case for
+RSI(2) mean reversion. Fourth, execution assumptions dominate: filling breached stops at the stop level rather than at
+the breaching close inflates the controls' Sharpe ratios by \STwoExecBaseStopMin{} to \STwoExecBaseStopMax{} and made
+ML exit look worse in Study~1 than it is. Fifth, the controls themselves lose most of their in-sample edge out of
+sample, which bounds what any component can add.
+
+The remainder of the paper is organized as follows. Section~\ref{sec:related} reviews related work.
+Section~\ref{sec:method} defines MBCA and its taxonomy. Section~\ref{sec:study1} reports Study~1.
+Sections~\ref{sec:study2design} and~\ref{sec:study2results} present the design and results of Study~2.
+Section~\ref{sec:discussion} discusses the findings and their practical implications, Section~\ref{sec:limitations}
+states the limitations, and Section~\ref{sec:conclusion} concludes.

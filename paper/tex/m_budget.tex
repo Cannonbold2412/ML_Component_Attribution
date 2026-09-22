@@ -1,0 +1,22 @@
+\begin{table}[!t]
+\centering
+\caption{The matched budget shared by every learned component (read from the code).}
+\label{tab:budget}
+\footnotesize
+\begin{tabular}{l p{5.2cm}}
+\toprule
+Item & Setting \\
+\midrule
+Features & ADX, ATR-normalized momentum, historical volatility, return $z$-score, backward-looking $R^2$, RSI, MACD histogram, KAMA slope (8, backward-only) \\
+Model & LightGBM gradient-boosted trees on standardized features \\
+n\_estimators & 200 \\
+num\_leaves & 31 \\
+max\_depth & 6 \\
+learning\_rate & 0.05 \\
+min\_child\_samples & 30 \\
+class\_weight & balanced \\
+random\_state & 42 \\
+Small model (ablation) & n\_estimators = 50, num\_leaves = 7, max\_depth = 3 \\
+\bottomrule
+\end{tabular}
+\end{table}

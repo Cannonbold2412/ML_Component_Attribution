@@ -1,0 +1,57 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Machine Learning and Meta-Labeling in Trading}
+
+Gu, Kelly, and Xiu \cite{gu2020empirical} show that tree ensembles and neural networks improve return forecasts and
+the portfolios built from them, largely by capturing nonlinear interactions among momentum, liquidity, and volatility
+signals. Their object is the forecast, not the decision it feeds. Meta-labeling \cite{lopezdeprado2018afml} addresses
+the decision directly: a primary model chooses the side of a trade, and a secondary classifier, trained on realized
+outcomes, decides whether to take it and how large to make it. Joubert \cite{joubert2022metalabeling} formalizes
+meta-labeling as a layer that filters false-positive signals and sizes positions on top of a primary strategy. Our
+meta-labeling and position-sizing components implement exactly these two uses, with a fixed rule rather than a learned
+model as the primary; in the taxonomy of Section~\ref{sec:taxonomy} both are \emph{narrowing} components, because
+they can only reject or re-weight decisions the rule has already made.
+
+\subsection{Hybrid Systems and Module Ablations}
+
+Hybrid systems that combine technical rules, ML, and other signals typically report aggregate improvements over a
+rule-only baseline without decomposing which sub-component is responsible; a recent regime-adaptive equity system that
+integrates technical analysis, ML, and financial sentiment is a representative example
+\cite{generatingalpha2026hybrid}. The closest methodological precedent we found is a deep-learning multi-day-turnover
+pipeline for Chinese A-shares \cite{turnover2025ablation}, which ablates its modules one at a time and reports each
+module's marginal contribution to annualized return. MBCA shares that spirit but differs in three ways: the
+components are insertion points of one fixed rule rather than modules of a proprietary architecture, every component
+receives the same feature and model budget, and every component is tested out of sample at a pre-specified freeze.
+Volatility-managed portfolios \cite{moreira2017volmanaged} scale exposure by realized volatility at the portfolio
+level; our sizing component instead scales each trade by a predicted probability of success.
+
+\subsection{Technical Trading Rules and Data Snooping}
+
+Moving-average and breakout rules have a long empirical record \cite{brock1992simple,park2007technical}, and
+time-series momentum is documented across asset classes and more than a century of data
+\cite{moskowitz2012momentum,hurst2017century}. Their apparent profitability, however, is highly sensitive to how many
+rules were searched. White's reality check \cite{white2000reality} and its application to technical rules by
+Sullivan, Timmermann, and White \cite{sullivan1999data} remove much of it once the full rule universe is accounted
+for; Hansen's test of superior predictive ability \cite{hansen2005spa} sharpens that comparison, and Harvey, Liu, and
+Zhu \cite{harvey2016cross} argue for significance thresholds far above conventional ones. Study~2 therefore evaluates
+canonical rules chosen and parameterized before any data were seen, rather than searched ones.
+
+\subsection{Inference on Sharpe Ratios and Backtest Overfitting}
+
+Sharpe ratios are estimated with substantial error, and serial correlation distorts naive annualization
+\cite{lo2002sharpe}. Ledoit and Wolf \cite{ledoit2008robust} propose a studentized test of the difference between
+two Sharpe ratios based on a circular block bootstrap \cite{politis1992circular}, which respects both the pairing of
+the two return series and their serial dependence. Selection across many backtests inflates the best observed Sharpe
+ratio; the deflated Sharpe ratio \cite{bailey2014deflated} and the probability of backtest overfitting
+\cite{bailey2017pbo} quantify that bias. Across many tests, the false-discovery rate \cite{benjamini1995fdr} and Holm's
+family-wise procedure \cite{holm1979simple} control multiplicity, and pre-registration \cite{nosek2018preregistration}
+separates confirmatory tests from exploratory ones.
+
+\subsection{Positioning}
+
+We found no work that holds a rule-based strategy, its data, features, model class, and evaluation protocol fixed
+while sweeping which single decision a learned model replaces, that names this constraint as a reusable
+methodology, and that reports every resulting configuration rather than the best one. MBCA is complementary to
+data-snooping corrections: those account for the search \emph{across} rules, whereas MBCA controls what varies
+\emph{within} one rule. This paper is the first full application of the methodology.

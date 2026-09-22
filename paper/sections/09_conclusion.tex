@@ -1,0 +1,22 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+Matched-budget component attribution asks where, specifically, a learned component adds value inside a rule-based
+system, holding everything except the insertion point fixed. Applied to one strategy in three markets (Study~1) and
+then, pre-registered, to five historically documented strategies on \STwoInstruments{} instruments across
+\STwoMarkets{} markets and two independent freezes (Study~2), it gives a consistent answer. At a matched budget of
+generic price features, ML rarely changes a rule-based strategy significantly (\STwoMktSigGain{} significant gains and
+\STwoMktSigLoss{} significant losses in \STwoMktTests{} tests). Narrowing components are small, mostly positive,
+transferable, and safe. Replacing components are high-variance and help only when the replaced rule has a structural
+weakness, as ML exit does for RSI(2) mean reversion. And realistic execution matters more than any component. Because
+every number in this paper is generated from one pre-registered configuration by the released pipeline, each of these
+claims can be re-derived---or overturned---by re-running it.
+
+\section*{Data and Code Availability}
+
+The code, the raw and cleaned data with their provenance manifests, the trades of the reported run, and all analysis
+outputs are available at \url{https://github.com/Cannonbold2412/ML_Component_Attribution}. The per-configuration
+results summarized in the figures are provided there as supplementary data: every Study~1 configuration in
+\texttt{results/paper/}, the configuration-by-configuration comparison with the re-implementation in
+\texttt{results/replication/}, and every Study~2 test, portfolio, regime, crisis, and jackknife result in
+\texttt{results/study2/analysis/}.

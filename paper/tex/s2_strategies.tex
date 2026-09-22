@@ -1,0 +1,17 @@
+\begin{table*}[!t]
+\centering
+\caption{The five pre-registered strategies (the rule-based controls). Each instrument's parameters are re-selected from these grids by walk-forward on every fold; exit multiples are in units of ATR.}
+\label{tab:s2strat}
+\footnotesize
+\begin{tabular}{l l l l l}
+\toprule
+Strategy & Reference & Signal grid & Exit & Exit grid ($\times$ATR) \\
+\midrule
+JMA crossover & Study 1 control & fast $\in$ \{5, 7, 9\}; slow $\in$ \{21, 28\} & trailing & stop $\in$ \{1.5, 2\}; trail $\in$ \{2, 3\} \\
+Dual SMA crossover & \cite{brock1992simple} & fast $\in$ \{20, 50\}; slow $\in$ \{100, 200\} & trailing & stop $\in$ \{2, 3\}; trail $\in$ \{3, 4\} \\
+Donchian breakout & \cite{faith2007turtle} & lookback $\in$ \{20, 55\} & trailing & stop $\in$ \{2\}; trail $\in$ \{2, 3\} \\
+Time-series momentum & \cite{moskowitz2012momentum} & lookback $\in$ \{126, 252\} & trailing & stop $\in$ \{2, 3\}; trail $\in$ \{3, 4\} \\
+RSI(2) reversion & \cite{connors2008short} & entry $\in$ \{5, 10\} & bracket & stop $\in$ \{2, 3\}; target $\in$ \{1, 1.5\} \\
+\bottomrule
+\end{tabular}
+\end{table*}

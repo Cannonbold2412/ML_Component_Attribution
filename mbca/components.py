@@ -163,8 +163,8 @@ class MetaLabel:
     kind = "narrowing"
     name = "ML Meta-Labeling"
 
-    def __init__(self, threshold: float = 0.5):
-        self.threshold = threshold
+    def __init__(self, threshold: float = 0.5, model_params: dict | None = None):
+        self.threshold, self.model_params = threshold, model_params or {}
 
     def fit(self, frames: Frames, split_date, base: Pipeline | None = None) -> "MetaLabel":
         """Label = realized return > 0 of the base pipeline's own trades at the
@@ -183,7 +183,7 @@ class MetaLabel:
         X = pd.concat(Xs, ignore_index=True)
         if X.empty:
             raise ValueError("no resolved pre-split trades to meta-label")
-        self.model = ProbModel().fit(X, pd.Series(np.concatenate(ys)))
+        self.model = ProbModel(**self.model_params).fit(X, pd.Series(np.concatenate(ys)))
         return self
 
     def mask(self, df: pd.DataFrame) -> np.ndarray:
@@ -247,17 +247,18 @@ class Exit:
     kind = "replacing"
     name = "ML Exit"
 
-    def __init__(self, threshold: float = 0.5, horizon: int = 10, sl_mult: float = 3.0):
+    def __init__(self, threshold: float = 0.5, horizon: int = 10, sl_mult: float = 3.0, model_params: dict | None = None):
         self.threshold, self.horizon, self.sl_mult = threshold, horizon, sl_mult
+        self.model_params = model_params or {}
 
     def fit(self, frames: Frames, split_date, base: Pipeline | None = None) -> "Exit":
         lab = lambda d: (lambda df: label_continuation(df, d, self.horizon))
-        self.long = ProbModel().fit(*_pool(frames, split_date, self.horizon, lab(1)))
-        self.short = ProbModel().fit(*_pool(frames, split_date, self.horizon, lab(-1)))
+        self.long = ProbModel(**self.model_params).fit(*_pool(frames, split_date, self.horizon, lab(1)))
+        self.short = ProbModel(**self.model_params).fit(*_pool(frames, split_date, self.horizon, lab(-1)))
         return self
 
     def exit_fn(self, df: pd.DataFrame, signal: pd.Series, sl_mult: float | None = None,
-                fee_bps: float = 7.0) -> pd.DataFrame:
+                fee_bps: float = 7.0, fill: str = "stop") -> pd.DataFrame:
         sl_mult = self.sl_mult if sl_mult is None else sl_mult
         price = df["close"].to_numpy(float)
         proba = {1: _proba(self.long, df), -1: _proba(self.short, df)}
@@ -273,7 +274,9 @@ class Exit:
             if not hits.size:
                 return n - 1, price[-1], "eod"
             k = hits[0]
-            return (i + 1 + k, sl, "stop") if stop_hit[k] else (i + 1 + k, fwd[k], "ml_exit")
+            if stop_hit[k]:
+                return i + 1 + k, (sl if fill == "stop" else fwd[k]), "stop"
+            return i + 1 + k, fwd[k], "ml_exit"
 
         return _scan(df, signal, fee_bps, find_exit)
 

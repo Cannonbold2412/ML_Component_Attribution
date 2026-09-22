@@ -8,3 +8,4 @@ dist/
 paper/*.docx
 
 results/my_strategy_forest.png
+paper/.pandoc_flat.tex
